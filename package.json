@@ -1,0 +1,24 @@
+{
+	"name": "@affinity-lab/blitz",
+	"version": "0.0.1",
+	"author": "Affinity Lab",
+	"main": "dist/index",
+	"scripts": {
+		"build": "npx tsc && npm version patch --no-git-tag-version",
+		"prebuild": "rimraf ./dist"
+	},
+	"files": [
+		"./**/*"
+	],
+	"dependencies": {
+		"@affinity-lab/affinity-util": "github:affinity-lab/affinity-util",
+		"sharp": "^0.32.5",
+		"mysql2": "^3.6.3",
+		"drizzle-orm": "^0.29.0"
+	},
+	"devDependencies": {
+		"@types/node": "^18.18.9",
+		"rimraf": "^5.0.5",
+		"typescript": "^5.2.2"
+	}
+}

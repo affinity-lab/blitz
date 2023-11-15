@@ -1,0 +1,15 @@
+{
+    "name": "@affinity-lab/graphane",
+    "version": "0.0.6",
+    "author": "Affinity Lab",
+    "scripts": {},
+    "files": [
+        "./**/*"
+    ],
+    "dependencies": {
+        "@types/micromatch": "^4.0.2",
+        "@types/mime-types": "^2.1.1",
+        "@types/sanitize-html": "^2.9.0",
+        "@types/ini": "^1.3.31"
+    }
+}
