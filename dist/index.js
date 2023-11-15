@@ -23,4 +23,5 @@ __exportStar(require("./storage/types"), exports);
 __exportStar(require("./storage/collection"), exports);
 __exportStar(require("./storage/collection-storage"), exports);
 __exportStar(require("./storage/storage-schema-factory"), exports);
+__exportStar(require("./schema-helper"), exports);
 //# sourceMappingURL=index.js.map

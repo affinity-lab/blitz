@@ -7,3 +7,4 @@ export * from "./storage/types";
 export * from "./storage/collection";
 export * from "./storage/collection-storage";
 export * from "./storage/storage-schema-factory";
+export * from "./schema-helper";
