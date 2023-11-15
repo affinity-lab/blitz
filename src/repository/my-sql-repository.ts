@@ -8,7 +8,7 @@ import {BLITZ_EVENTS} from "../events";
 import {CollectionStorage} from "../storage/collection-storage";
 
 
-export default class MySqlRepository<S extends Record<string, any> = any, T extends MySqlTable = any> {
+export class MySqlRepository<S extends Record<string, any> = any, T extends MySqlTable = any> {
 
 	static cache(ttl?: number): MethodDecorator {
 		return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {

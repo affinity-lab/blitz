@@ -32,6 +32,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MySqlRepository = void 0;
 const drizzle_orm_1 = require("drizzle-orm");
 const affinity_util_1 = require("@affinity-lab/affinity-util");
 const crypto = __importStar(require("crypto"));
@@ -164,7 +165,7 @@ class MySqlRepository {
         this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_DELETE, this, id, affectedRows);
     }
 }
-exports.default = MySqlRepository;
+exports.MySqlRepository = MySqlRepository;
 __decorate([
     (0, affinity_util_1.MaterializeIt)(),
     __metadata("design:type", Object),

@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { EventEmitter } from "events";
-import MySqlRepository from "../repository/my-sql-repository";
+import { MySqlRepository } from "../repository/my-sql-repository";
 import { Attachments, Rules, TmpFile } from "./types";
 import { CollectionStorage } from "./collection-storage";
 export declare class Collection<METADATA extends Record<string, any>> {

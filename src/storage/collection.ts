@@ -1,5 +1,5 @@
 import {EventEmitter} from "events";
-import MySqlRepository from "../repository/my-sql-repository";
+import {MySqlRepository} from "../repository/my-sql-repository";
 import {BLITZ_EVENTS} from "../events";
 import Path from "path";
 import {blitzError} from "../errors";

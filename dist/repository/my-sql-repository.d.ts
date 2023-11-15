@@ -5,7 +5,7 @@ import { MySql2Database } from "drizzle-orm/mysql2";
 import { Cache, type KeyValue } from "@affinity-lab/affinity-util";
 import { EventEmitter } from "events";
 import { CollectionStorage } from "../storage/collection-storage";
-export default class MySqlRepository<S extends Record<string, any> = any, T extends MySqlTable = any> {
+export declare class MySqlRepository<S extends Record<string, any> = any, T extends MySqlTable = any> {
     readonly schema: T;
     readonly db: MySql2Database<S>;
     readonly eventEmitter: EventEmitter;

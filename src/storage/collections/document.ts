@@ -1,6 +1,6 @@
 import {Collection} from "../collection";
 import {Rules} from "../types";
-import MySqlRepository from "../../repository/my-sql-repository";
+import {MySqlRepository} from "../../repository/my-sql-repository";
 
 export class DocumentCollection extends Collection<{ title: string }> {
 
