@@ -51,14 +51,14 @@ class MySqlRepository {
             descriptor.value = async function (...args) {
                 const instance = this;
                 if (instance.cache === undefined)
-                    return await func(...args);
+                    return await func.call(instance, ...args);
                 const key = crypto.createHash("md5").update(id + JSON.stringify(args)).digest("hex");
-                const item = await instance.cache.get(key);
+                const item = await instance.cache?.get(key);
                 if (item !== undefined)
                     return item;
                 const result = await func.call(instance, ...args);
                 if (result !== undefined)
-                    await instance.cache.set({ key: key, value: result }, ttl);
+                    await instance.cache?.set({ key: key, value: result }, ttl);
                 return result;
             };
         };
