@@ -15,7 +15,7 @@ export class ImageCollection extends Collection<{
 
 	static factory(repository: MySqlRepository, name: string, rules: Rules) {
 		return new ImageCollection(
-			repository.name + name,
+			`${repository.name}.${name}`,
 			repository.eventEmitter,
 			repository,
 			repository.collectionStorage!,

@@ -5,7 +5,7 @@ const collection_1 = require("../collection");
 const affinity_util_1 = require("@affinity-lab/affinity-util");
 class ImageCollection extends collection_1.Collection {
     static factory(repository, name, rules) {
-        return new ImageCollection(repository.name + name, repository.eventEmitter, repository, repository.collectionStorage, rules);
+        return new ImageCollection(`${repository.name}.${name}`, repository.eventEmitter, repository, repository.collectionStorage, rules);
     }
     async prepareFile(file) {
         const descriptor = new affinity_util_1.FileDescriptor(file.file);

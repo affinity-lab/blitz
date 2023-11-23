@@ -134,7 +134,7 @@ class CollectionStorage {
         const attachments = await this.get(name, id, res);
         attachments.push({
             name: filename,
-            size: fs_1.default.statSync(file.filename).size,
+            size: fs_1.default.statSync(file.file).size,
             id: crypto_1.default.randomUUID(),
             metadata
         });
