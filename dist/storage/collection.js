@@ -52,7 +52,6 @@ class Collection {
         }
         // check limit
         const attachments = await this.storage.get(this.name, id);
-        console.log(attachments.length, this.rules.limit);
         if (attachments.length >= this.rules.limit) {
             throw errors_1.blitzError.storage.tooManyFiles(this.repository.name, id, filename, this.rules.limit);
         }
@@ -63,7 +62,7 @@ class Collection {
         // prepare (modify, replace, whatever) the file
         ({ file, metadata } = await this.prepareFile(file));
         // check size
-        let size = fs_1.default.statSync(file.filename).size;
+        let size = fs_1.default.statSync(file.file).size;
         if (size > this.rules.size) {
             throw errors_1.blitzError.storage.fileTooLarge(this.repository.name, id, filename, this.rules.size);
         }

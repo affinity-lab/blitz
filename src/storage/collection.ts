@@ -61,7 +61,6 @@ export class Collection<METADATA extends Record<string, any>> {
 
 		// check limit
 		const attachments = await this.storage.get(this.name, id);
-		console.log(attachments.length, this.rules.limit);
 		if (attachments.length >= this.rules.limit) {
 			throw blitzError.storage.tooManyFiles(this.repository.name, id, filename, this.rules.limit);
 		}
@@ -75,7 +74,7 @@ export class Collection<METADATA extends Record<string, any>> {
 		({file, metadata} = await this.prepareFile(file));
 
 		// check size
-		let size = fs.statSync(file.filename).size;
+		let size = fs.statSync(file.file).size;
 		if (size > this.rules.size) {
 			throw blitzError.storage.fileTooLarge(this.repository.name, id, filename, this.rules.size);
 		}
