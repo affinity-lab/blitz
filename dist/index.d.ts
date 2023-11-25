@@ -8,3 +8,5 @@ export * from "./storage/collection";
 export * from "./storage/collection-storage";
 export * from "./storage/storage-schema-factory";
 export * from "./schema-helper";
+export * from "./storage/servers/storage-file-server";
+export * from "./storage/servers/storage-img-server";
