@@ -10,7 +10,7 @@ const events_1 = require("../events");
 const glob_1 = require("glob");
 function imgEventListeners(imgPath, eventEmitter) {
     eventEmitter.on(events_1.BLITZ_EVENTS.STORAGE_DESTROY, (collection, id) => {
-        const pattern = path_1.default.join(imgPath, `${collection}.${id.toString(36)}*`);
+        const pattern = path_1.default.join(imgPath, `${collection}.${id.toString(36).padStart(6, '0')}*`);
         const files = glob_1.glob.sync(pattern);
         files.forEach((file) => {
             try {
@@ -21,8 +21,10 @@ function imgEventListeners(imgPath, eventEmitter) {
         });
     });
     eventEmitter.on(events_1.BLITZ_EVENTS.STORAGE_DELETE, (collection, id, filename) => {
-        const pattern = path_1.default.join(imgPath, `${collection}.${id.toString(36)}.${filename}*`);
+        const pattern = path_1.default.join(imgPath, `${collection}.${id.toString(36).padStart(6, '0')}.${filename}*`);
         const files = glob_1.glob.sync(pattern);
+        console.log(pattern);
+        console.log(files);
         files.forEach((file) => {
             try {
                 fs_1.default.unlinkSync(file);
