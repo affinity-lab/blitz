@@ -10,3 +10,4 @@ export * from "./storage/storage-schema-factory";
 export * from "./schema-helper";
 export * from "./storage/servers/storage-file-server";
 export * from "./storage/servers/storage-img-server";
+export * from "./storage/img-event-listeners";

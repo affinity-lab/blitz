@@ -26,4 +26,5 @@ __exportStar(require("./storage/storage-schema-factory"), exports);
 __exportStar(require("./schema-helper"), exports);
 __exportStar(require("./storage/servers/storage-file-server"), exports);
 __exportStar(require("./storage/servers/storage-img-server"), exports);
+__exportStar(require("./storage/img-event-listeners"), exports);
 //# sourceMappingURL=index.js.map
