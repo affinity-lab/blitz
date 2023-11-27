@@ -36,7 +36,7 @@ export class Collection<METADATA extends Record<string, any>> {
 				console.log(id);
 				console.log(repo);
 				if (repo === this.repository) {
-					console.log("DESTROY");
+					this.emitter.emit(BLITZ_EVENTS.STORAGE_DESTROY, this.name, id);
 					await this.storage.destroy(this.name, id);
 				}
 			}
@@ -83,6 +83,7 @@ export class Collection<METADATA extends Record<string, any>> {
 	}
 
 	async delete(id: number, filename: string) {
+		this.emitter.emit(BLITZ_EVENTS.STORAGE_DELETE, this.name, id, filename);
 		await this.storage.delete(this.name, id, filename);
 	}
 

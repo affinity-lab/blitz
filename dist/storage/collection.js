@@ -33,7 +33,7 @@ class Collection {
             console.log(id);
             console.log(repo);
             if (repo === this.repository) {
-                console.log("DESTROY");
+                this.emitter.emit(events_1.BLITZ_EVENTS.STORAGE_DESTROY, this.name, id);
                 await this.storage.destroy(this.name, id);
             }
         });
@@ -69,6 +69,7 @@ class Collection {
         await this.storage.add(this.name, id, file, metadata);
     }
     async delete(id, filename) {
+        this.emitter.emit(events_1.BLITZ_EVENTS.STORAGE_DELETE, this.name, id, filename);
         await this.storage.delete(this.name, id, filename);
     }
     async get(id) {

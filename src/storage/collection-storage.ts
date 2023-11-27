@@ -123,7 +123,9 @@ export class CollectionStorage {
 		await this.queries.del.execute({name, id});
 		const path = this.getPath(name, id);
 		const files = fs.readdirSync(path);
-		files.map(async (file) => fs.unlinkSync(Path.join(path, file)));
+		files.map(async (file) =>{
+			fs.unlinkSync(Path.join(path, file))
+		});
 		this.removeStructure(path);
 	}
 

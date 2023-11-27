@@ -113,7 +113,9 @@ class CollectionStorage {
         await this.queries.del.execute({ name, id });
         const path = this.getPath(name, id);
         const files = fs_1.default.readdirSync(path);
-        files.map(async (file) => fs_1.default.unlinkSync(path_1.default.join(path, file)));
+        files.map(async (file) => {
+            fs_1.default.unlinkSync(path_1.default.join(path, file));
+        });
         this.removeStructure(path);
     }
     async updateRecord(name, id, attachments) {
