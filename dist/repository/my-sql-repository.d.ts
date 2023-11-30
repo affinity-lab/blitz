@@ -29,6 +29,7 @@ export declare class MySqlRepository<S extends Record<string, any> = any, T exte
     protected all(ids: Array<number>): Promise<Array<InferSelectModel<T>>>;
     private allFromStoreOrDatabase;
     insert(values: InferInsertModel<T>): Promise<number | undefined>;
+    update(values: MySqlUpdateSetSource<T>): Promise<number>;
     update(id: number, values: MySqlUpdateSetSource<T>): Promise<number>;
     delete(id: number): Promise<void>;
 }

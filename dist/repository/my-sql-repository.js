@@ -150,6 +150,13 @@ class MySqlRepository {
         return id;
     }
     async update(id, values) {
+        if (typeof id != "number") {
+            values = id;
+            id = values.id;
+            delete (values.id);
+        }
+        if (typeof id !== "number" || isNaN(id))
+            throw (0, affinity_util_1.fatalError)("id not provided for update");
         await this.store?.del(id);
         this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_UPDATE, this, id, values);
         const res = await this.db.update(this.schema).set(values).where((0, drizzle_orm_1.sql) `id = ${id}`);

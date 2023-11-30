@@ -1,7 +1,7 @@
 import {MySqlTable, MySqlUpdateSetSource, PreparedQuery} from "drizzle-orm/mysql-core";
 import {getTableName, InferInsertModel, InferSelectModel, sql} from "drizzle-orm";
 import {MySql2Database, MySqlRawQueryResult} from "drizzle-orm/mysql2";
-import {Cache, type KeyValue, MaterializeIt} from "@affinity-lab/affinity-util";
+import {Cache, fatalError, type KeyValue, MaterializeIt} from "@affinity-lab/affinity-util";
 import * as crypto from "crypto";
 import {EventEmitter} from "events";
 import {BLITZ_EVENTS} from "../events";
@@ -119,10 +119,18 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 		return id;
 	}
 
-	async update(id: number, values: MySqlUpdateSetSource<T>) {
-		await this.store?.del(id);
+	async update(values: MySqlUpdateSetSource<T>): Promise<number>;
+	async update(id: number, values: MySqlUpdateSetSource<T>): Promise<number>;
+	async update(id: MySqlUpdateSetSource<T> | number, values?: MySqlUpdateSetSource<T>): Promise<number> {
+		if (typeof id != "number") {
+			values = id;
+			id = values.id as number;
+			delete (values.id);
+		}
+		if (typeof id !== "number" || isNaN(id)) throw fatalError("id not provided for update");
+		await this.store?.del(id as number);
 		this.eventEmitter.emit(BLITZ_EVENTS.BEFORE_UPDATE, this, id, values);
-		const res: MySqlRawQueryResult = await this.db.update(this.schema).set(values).where(sql`id = ${id}`);
+		const res: MySqlRawQueryResult = await this.db.update(this.schema).set(values!).where(sql`id = ${id}`);
 		const affectedRows = res[0].affectedRows;
 		this.eventEmitter.emit(BLITZ_EVENTS.AFTER_UPDATE, this, id, values, affectedRows);
 		return affectedRows;
