@@ -5,14 +5,14 @@ export function storageFileServer(
 	endpoint: string,
 	fileStoragePath: string,
 	fileMaxAge: string | number,
-	guards: Record<string, ((id: number, file: string) => boolean|Promise<boolean>)> = {}
+	guards: Record<string, ((id: number, file: string, req:Request) => boolean|Promise<boolean>)> = {}
 ): void {
 	exp.use(
 		endpoint + "/:name/:id/:file",
 		async (req: Request, res: Response, next: NextFunction) => {
 			if (guards[req.params.name] !== undefined) {
 				let guard = guards[req.params.name];
-				if (await guard(parseInt(req.params.id, 36), req.params.file)) {
+				if (await guard(parseInt(req.params.id, 36), req.params.file, req)) {
 					res.setHeader("Cache-Control", `public, max-age=0`);
 					next();
 				} else {

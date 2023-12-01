@@ -9,7 +9,7 @@ function storageFileServer(exp, endpoint, fileStoragePath, fileMaxAge, guards = 
     exp.use(endpoint + "/:name/:id/:file", async (req, res, next) => {
         if (guards[req.params.name] !== undefined) {
             let guard = guards[req.params.name];
-            if (await guard(parseInt(req.params.id, 36), req.params.file)) {
+            if (await guard(parseInt(req.params.id, 36), req.params.file, req)) {
                 res.setHeader("Cache-Control", `public, max-age=0`);
                 next();
             }
