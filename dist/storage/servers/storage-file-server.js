@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.storageFileServer = void 0;
 const express_1 = __importDefault(require("express"));
 function storageFileServer(exp, endpoint, fileStoragePath, fileMaxAge, guards = {}) {
-    exp.use(endpoint + "/:name/:id/:file", (req, res, next) => {
+    exp.use(endpoint + "/:name/:id/:file", async (req, res, next) => {
         if (guards[req.params.name] !== undefined) {
             let guard = guards[req.params.name];
-            if (guard(parseInt(req.params.id, 36), req.params.file)) {
+            if (await guard(parseInt(req.params.id, 36), req.params.file)) {
                 res.setHeader("Cache-Control", `public, max-age=0`);
                 next();
             }
