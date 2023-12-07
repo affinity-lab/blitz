@@ -21,7 +21,7 @@ function storageFileServer(exp, endpoint, fileStoragePath, fileMaxAge, guards = 
             next();
         }
     }, (req, res, next) => {
-        let b36 = parseInt(req.params.id).toString(36).padStart(6, "0");
+        let b36 = req.params.id.padStart(6, "0");
         req.url = `//${req.params.name}/${b36.slice(0, 2)}/${b36.slice(2, 4)}/${b36.slice(4, 6)}/${req.params.file}`;
         res.getHeader("Cache-Control") === undefined && res.setHeader("Cache-Control", `public, max-age=${fileMaxAge}`);
         next();

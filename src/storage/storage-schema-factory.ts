@@ -7,7 +7,7 @@ export function storageSchemaFactory(name: string = "_storage") {
 			itemId: int("itemId").notNull(),
 			data: json("data").default("{}")
 		},
-		(t) => ({
+		(t: any) => ({
 			unq: unique().on(t.name, t.itemId)
 		})
 	);
