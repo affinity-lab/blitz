@@ -107,7 +107,7 @@ class MySqlRepository {
             return Promise.resolve(undefined);
         if (Array.isArray(id))
             return this.all(id);
-        return this.store ? this.getFromStoreOrDatabase(id) : this.baseQueries.get.execute({ id });
+        return this.store ? this.getFromStoreOrDatabase(id) : (await this.baseQueries.get.execute({ id }))[0];
     }
     async getFromStoreOrDatabase(id) {
         // try from store, when exists return

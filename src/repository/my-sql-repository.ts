@@ -76,7 +76,7 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 	async get(id: number | undefined | null | Array<number>): Promise<InferSelectModel<T> | Array<InferSelectModel<T>> | undefined> {
 		if (id === undefined || id === null) return Promise.resolve(undefined);
 		if (Array.isArray(id)) return this.all(id);
-		return this.store ? this.getFromStoreOrDatabase(id) : this.baseQueries.get.execute({id});
+		return this.store ? this.getFromStoreOrDatabase(id) : (await this.baseQueries.get.execute({id}))[0];
 	}
 
 	private async getFromStoreOrDatabase(id: number) {
