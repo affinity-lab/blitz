@@ -45,7 +45,7 @@ function storageImgServer(exp, endpoint, imgStoragePath, fileStoragePath, maxAge
         const { params } = req;
         const file = path_1.default.parse(params.file).name;
         const { catalog, id, img } = params;
-        let b36 = parseInt(id).toString(36).padStart(6, "0");
+        let b36 = req.params.id.padStart(6, "0");
         const source = path_1.default.join(fileStoragePath, catalog, b36.slice(0, 2), b36.slice(2, 4), b36.slice(4, 6), file);
         if (!fs.existsSync(source)) {
             res.removeHeader("Cache-Control");
@@ -62,22 +62,41 @@ function storageImgServer(exp, endpoint, imgStoragePath, fileStoragePath, maxAge
         let width = match[1] === "0" ? oWidth : parseInt(match[1]);
         let height = match[2] === "0" ? oHeight : parseInt(match[2]);
         const focus = meta.pages > 1 ? "center" : (match[3] || "entropy");
-        if (oWidth < width) {
-            height = Math.floor(height * oWidth / width);
-            width = oWidth;
+        if (focus === "box") {
+            const oAspect = oWidth / oHeight;
+            const aspect = width / height;
+            if (oAspect > aspect) {
+                height = Math.floor(width * oAspect);
+            }
+            else {
+                width = Math.floor(height * oAspect);
+            }
+            await (0, sharp_1.default)(source, { animated: true })
+                .resize(width, height, {
+                kernel: sharp_1.default.kernel.lanczos3,
+                fit: "contain",
+                withoutEnlargement: true
+            })
+                .toFile(imgStoragePath + "/" + req.url);
         }
-        if (oHeight < height) {
-            width = Math.floor(width * oHeight / height);
-            height = oHeight;
+        else {
+            if (oWidth < width) {
+                height = Math.floor(height * oWidth / width);
+                width = oWidth;
+            }
+            if (oHeight < height) {
+                width = Math.floor(width * oHeight / height);
+                height = oHeight;
+            }
+            await (0, sharp_1.default)(source, { animated: true })
+                .resize(width, height, {
+                kernel: sharp_1.default.kernel.lanczos3,
+                fit: "cover",
+                position: focus,
+                withoutEnlargement: true
+            })
+                .toFile(imgStoragePath + "/" + req.url);
         }
-        await (0, sharp_1.default)(source, { animated: true })
-            .resize(width, height, {
-            kernel: sharp_1.default.kernel.lanczos3,
-            fit: "cover",
-            position: focus,
-            withoutEnlargement: true
-        })
-            .toFile(imgStoragePath + "/" + req.url);
         res.sendFile(path_1.default.resolve(imgStoragePath + "/" + req.url));
     });
 }
