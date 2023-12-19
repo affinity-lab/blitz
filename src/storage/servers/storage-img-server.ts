@@ -28,9 +28,9 @@ export function storageImgServer(
 			const file = path.parse(params.file).name;
 			const {catalog, id, img} = params;
 
-			let b36: string = parseInt(id).toString(36).padStart(6, "0");
-			const source: string = path.join(fileStoragePath, catalog, b36.slice(0, 2), b36.slice(2, 4), b36.slice(4, 6), file);
+			let b36: string = req.params.id.padStart(6, "0");
 
+			const source: string = path.join(fileStoragePath, catalog, b36.slice(0, 2), b36.slice(2, 4), b36.slice(4, 6), file);
 			if (!fs.existsSync(source)) {
 				res.removeHeader("Cache-Control");
 				res.sendStatus(404);
@@ -48,23 +48,48 @@ export function storageImgServer(
 			let height = match![2] === "0" ? oHeight : parseInt(match![2]);
 			const focus = meta.pages! > 1 ? "center" : (match![3] || "entropy");
 
-			if (oWidth < width) {
-				height = Math.floor(height * oWidth / width);
-				width = oWidth;
-			}
-			if (oHeight < height) {
-				width = Math.floor(width * oHeight / height);
-				height = oHeight;
-			}
 
-			await sharp(source, {animated: true})
-				.resize(width, height, {
-					kernel: sharp.kernel.lanczos3,
-					fit: "cover",
-					position: focus,
-					withoutEnlargement: true
-				})
-				.toFile(imgStoragePath + "/" + req.url);
+			if (focus === "box") {
+				const oAspect = oWidth / oHeight;
+				const aspect = width / height;
+
+
+				if (oAspect > aspect) {
+					height = Math.floor(width * oAspect);
+
+
+				} else {
+					width = Math.floor(height * oAspect);
+				}
+
+				await sharp(source, {animated: true})
+					.resize(width, height, {
+						kernel: sharp.kernel.lanczos3,
+						fit: "contain",
+						withoutEnlargement: true
+					})
+					.toFile(imgStoragePath + "/" + req.url);
+			} else {
+
+
+				if (oWidth < width) {
+					height = Math.floor(height * oWidth / width);
+					width = oWidth;
+				}
+				if (oHeight < height) {
+					width = Math.floor(width * oHeight / height);
+					height = oHeight;
+				}
+
+				await sharp(source, {animated: true})
+					.resize(width, height, {
+						kernel: sharp.kernel.lanczos3,
+						fit: "cover",
+						position: focus,
+						withoutEnlargement: true
+					})
+					.toFile(imgStoragePath + "/" + req.url);
+			}
 			res.sendFile(path.resolve(imgStoragePath + "/" + req.url));
 		}
 	);
