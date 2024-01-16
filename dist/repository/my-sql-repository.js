@@ -77,6 +77,7 @@ class MySqlRepository {
     }
     publicFields = {};
     excludedFields = [];
+    files;
     constructor(schema, db, eventEmitter, collectionStorage, store, cache) {
         this.schema = schema;
         this.db = db;

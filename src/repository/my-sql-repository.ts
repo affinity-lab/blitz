@@ -6,6 +6,7 @@ import * as crypto from "crypto";
 import {EventEmitter} from "events";
 import {BLITZ_EVENTS} from "../events";
 import {CollectionStorage} from "../storage/collection-storage";
+import {Collection} from "../storage/collection";
 
 
 export class MySqlRepository<S extends Record<string, any> = any, T extends MySqlTable = any> {
@@ -40,6 +41,7 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 
 	protected publicFields: Record<string, any> = {};
 	protected excludedFields: Array<string> = [];
+	public files: Array<Collection<Record<string, any>>>;
 
 	constructor(
 		readonly schema: T,
