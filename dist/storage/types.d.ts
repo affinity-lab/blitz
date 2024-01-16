@@ -31,3 +31,12 @@ export type ImgRGB = {
     b: number;
 };
 export type ImgFocus = "centre" | "top" | "left" | "bottom" | "right" | "entropy" | "attention";
+export declare const imgFocusOptions: Array<string>;
+export type MetaField = {
+    name: string;
+} & ({
+    type: "string";
+} | {
+    type: "enum";
+    options: Array<string>;
+});

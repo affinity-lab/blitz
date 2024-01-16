@@ -2,8 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImageCollection = void 0;
 const collection_1 = require("../collection");
+const types_1 = require("../types");
 const affinity_util_1 = require("@affinity-lab/affinity-util");
 class ImageCollection extends collection_1.Collection {
+    publicMetaFields = [{ name: "title", type: "string" }, { name: "focus", type: "enum", options: types_1.imgFocusOptions }];
     static factory(repository, name, rules) {
         return new ImageCollection(`${repository.name}.${name}`, repository.eventEmitter, repository, repository.collectionStorage, rules);
     }
@@ -19,6 +21,9 @@ class ImageCollection extends collection_1.Collection {
                 focus: "entropy"
             }
         };
+    }
+    async setFocus(id, filename, focus) {
+        await this.updateMetadata(id, filename, { focus });
     }
     async setTitle(id, filename, title) {
         await this.updateMetadata(id, filename, { title });

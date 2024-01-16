@@ -4,7 +4,7 @@ import {BLITZ_EVENTS} from "../events";
 import Path from "path";
 import {blitzError} from "../errors";
 import fs from "fs";
-import {Attachments, Rules, TmpFile} from "./types";
+import {Attachments, MetaField, Rules, TmpFile} from "./types";
 import {CollectionStorage} from "./collection-storage";
 
 export class Collection<METADATA extends Record<string, any>> {
@@ -18,6 +18,8 @@ export class Collection<METADATA extends Record<string, any>> {
 			rules
 		);
 	}
+
+	public publicMetaFields: Array<MetaField> = [];
 
 	constructor(
 		readonly name: string,
@@ -33,14 +35,31 @@ export class Collection<METADATA extends Record<string, any>> {
 		this.emitter.on(
 			BLITZ_EVENTS.AFTER_DELETE,
 			async (repo: MySqlRepository, id: number) => {
-				console.log(id);
-				console.log(repo);
 				if (repo === this.repository) {
 					this.emitter.emit(BLITZ_EVENTS.STORAGE_DESTROY, this.name, id);
 					await this.storage.destroy(this.name, id);
 				}
 			}
 		);
+	}
+
+	public async setMetadata(id: number, filename: string, metadata: Partial<METADATA>) {
+		let set: Record<string, any> = {};
+		for (const publicMetaField of this.publicMetaFields) {
+			if (metadata.hasOwnProperty(publicMetaField.name)){
+				switch (publicMetaField.type){
+					case "enum":
+						if(publicMetaField.options.includes(metadata[publicMetaField.name]!)){
+							set[publicMetaField.name] = metadata[publicMetaField.name];
+						}
+						break;
+					default:
+						set[publicMetaField.name] = metadata[publicMetaField.name];
+						break;
+				}
+			}
+		}
+		await this.storage.updateMetadata(this.name, id, filename, set);
 	}
 
 	protected async updateMetadata(id: number, filename: string, metadata: Partial<METADATA>) {

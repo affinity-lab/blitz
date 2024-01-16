@@ -1,5 +1,5 @@
 import { Collection } from "../collection";
-import { ImgFocus, ImgRGB, Rules } from "../types";
+import { ImgFocus, ImgRGB, MetaField, Rules } from "../types";
 import { TmpFile } from "@affinity-lab/affinity-util";
 import { MySqlRepository } from "../../repository/my-sql-repository";
 export declare class ImageCollection extends Collection<{
@@ -10,10 +10,12 @@ export declare class ImageCollection extends Collection<{
     animated: boolean;
     focus: ImgFocus;
 }> {
+    publicMetaFields: Array<MetaField>;
     static factory(repository: MySqlRepository, name: string, rules: Rules): ImageCollection;
     protected prepareFile(file: TmpFile): Promise<{
         file: TmpFile;
         metadata: Record<string, any>;
     }>;
+    setFocus(id: number, filename: string, focus: ImgFocus): Promise<void>;
     setTitle(id: number, filename: string, title: string): Promise<void>;
 }

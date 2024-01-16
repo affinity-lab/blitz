@@ -17,6 +17,7 @@ class Collection {
     static factory(repository, name, rules) {
         return new Collection(repository.name + name, repository.eventEmitter, repository, repository.collectionStorage, rules);
     }
+    publicMetaFields = [];
     constructor(name, emitter, repository, storage, rules) {
         this.name = name;
         this.emitter = emitter;
@@ -30,13 +31,29 @@ class Collection {
         if (Array.isArray(this.rules.ext) && this.rules.ext.length === 0)
             this.rules.ext = undefined;
         this.emitter.on(events_1.BLITZ_EVENTS.AFTER_DELETE, async (repo, id) => {
-            console.log(id);
-            console.log(repo);
             if (repo === this.repository) {
                 this.emitter.emit(events_1.BLITZ_EVENTS.STORAGE_DESTROY, this.name, id);
                 await this.storage.destroy(this.name, id);
             }
         });
+    }
+    async setMetadata(id, filename, metadata) {
+        let set = {};
+        for (const publicMetaField of this.publicMetaFields) {
+            if (metadata.hasOwnProperty(publicMetaField.name)) {
+                switch (publicMetaField.type) {
+                    case "enum":
+                        if (publicMetaField.options.includes(metadata[publicMetaField.name])) {
+                            set[publicMetaField.name] = metadata[publicMetaField.name];
+                        }
+                        break;
+                    default:
+                        set[publicMetaField.name] = metadata[publicMetaField.name];
+                        break;
+                }
+            }
+        }
+        await this.storage.updateMetadata(this.name, id, filename, set);
     }
     async updateMetadata(id, filename, metadata) {
         await this.storage.updateMetadata(this.name, id, filename, metadata);

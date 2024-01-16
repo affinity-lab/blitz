@@ -1,7 +1,6 @@
 import {Collection} from "../collection";
-import {ImgFocus, ImgRGB, Rules} from "../types";
-import {TmpFile} from "@affinity-lab/affinity-util";
-import {FileDescriptor} from "@affinity-lab/affinity-util";
+import {ImgFocus, imgFocusOptions, ImgRGB, MetaField, Rules} from "../types";
+import {FileDescriptor, TmpFile} from "@affinity-lab/affinity-util";
 import {MySqlRepository} from "../../repository/my-sql-repository";
 
 export class ImageCollection extends Collection<{
@@ -12,6 +11,9 @@ export class ImageCollection extends Collection<{
 	animated: boolean,
 	focus: ImgFocus
 }> {
+
+	public publicMetaFields: Array<MetaField> = [{name: "title", type: "string"}, {name: "focus", type: "enum", options: imgFocusOptions}];
+
 
 	static factory(repository: MySqlRepository, name: string, rules: Rules) {
 		return new ImageCollection(
@@ -36,6 +38,11 @@ export class ImageCollection extends Collection<{
 			}
 		};
 	}
+
+	async setFocus(id: number, filename: string, focus: ImgFocus) {
+		await this.updateMetadata(id, filename, {focus});
+	}
+
 	async setTitle(id: number, filename: string, title: string) {
 		await this.updateMetadata(id, filename, {title});
 	}

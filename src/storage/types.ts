@@ -38,3 +38,9 @@ export type ImgRGB = {
 }
 
 export type ImgFocus = "centre" | "top" | "left" | "bottom" | "right" | "entropy" | "attention";
+export const imgFocusOptions:Array<string> = ["centre", "top", "left", "bottom", "right", "entropy", "attention"];
+
+export type MetaField = { name: string } & (
+	{ type: "string" } |
+	{ type: "enum", options: Array<string> }
+	);
