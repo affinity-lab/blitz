@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CollectionStorage = void 0;
 const drizzle_orm_1 = require("drizzle-orm");
-const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const errors_1 = require("../errors");
 const crypto_1 = __importDefault(require("crypto"));
 class CollectionStorage {
@@ -169,11 +169,22 @@ class CollectionStorage {
     }
     async updateMetadata(name, id, filename, metadata) {
         const attachments = await this.get(name, id);
-        console.log(attachments);
         const idx = attachments.findIndex(a => a.name === filename);
         if (idx === -1)
             throw errors_1.blitzError.storage.attachedFileNotFound(name, id, filename);
         attachments[idx].metadata = { ...attachments[idx].metadata, ...metadata };
+        await this.updateRecord(name, id, attachments);
+    }
+    async rename(name, id, filename, newName) {
+        const attachments = await this.get(name, id);
+        const idx = attachments.findIndex(a => a.name === filename);
+        if (idx === -1)
+            throw errors_1.blitzError.storage.attachedFileNotFound(name, id, filename);
+        let path = this.getPath(name, id);
+        newName = this.sanitizeFilename(newName);
+        newName = this.getUniqueFilename(path, newName);
+        attachments[idx].name = newName;
+        fs_1.default.renameSync(path_1.default.join(path, filename), path_1.default.join(path, newName));
         await this.updateRecord(name, id, attachments);
     }
 }

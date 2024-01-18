@@ -23,4 +23,5 @@ export declare class Collection<METADATA extends Record<string, any>> {
     get(id: number): Promise<Attachments>;
     get(ids: Array<number>): Promise<Record<number, Attachments>>;
     setPosition(id: number, filename: string, position: number): Promise<void>;
+    rename(id: number, filename: string, newName: string): Promise<void>;
 }

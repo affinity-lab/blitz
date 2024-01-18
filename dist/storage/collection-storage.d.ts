@@ -29,4 +29,5 @@ export declare class CollectionStorage {
     delete(name: string, id: number, filename: string): Promise<void>;
     setPosition(name: string, id: number, filename: string, position: number): Promise<void>;
     updateMetadata(name: string, id: number, filename: string, metadata: Record<string, any>): Promise<void>;
+    rename(name: string, id: number, filename: string, newName: string): Promise<void>;
 }

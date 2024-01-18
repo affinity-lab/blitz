@@ -115,4 +115,8 @@ export class Collection<METADATA extends Record<string, any>> {
 	async setPosition(id: number, filename: string, position: number) {
 		await this.storage.setPosition(this.name, id, filename, position);
 	}
+
+	async rename(id: number, filename: string, newName: string) {
+		await this.storage.rename(this.name, id, filename, newName);
+	}
 }

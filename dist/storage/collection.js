@@ -95,6 +95,9 @@ class Collection {
     async setPosition(id, filename, position) {
         await this.storage.setPosition(this.name, id, filename, position);
     }
+    async rename(id, filename, newName) {
+        await this.storage.rename(this.name, id, filename, newName);
+    }
 }
 exports.Collection = Collection;
 //# sourceMappingURL=collection.js.map

@@ -2,8 +2,8 @@ import {MySqlTable, PreparedQuery} from "drizzle-orm/mysql-core";
 import {MySql2Database} from "drizzle-orm/mysql2";
 import {Cache} from "@affinity-lab/affinity-util";
 import {and, eq, sql} from "drizzle-orm";
-import Path from "path";
 import fs from "fs";
+import Path from "path";
 import {blitzError} from "../errors";
 import {AttachmentRecord, Attachments, TmpFile} from "./types";
 import crypto from "crypto";
@@ -189,10 +189,21 @@ export class CollectionStorage {
 
 	async updateMetadata(name: string, id: number, filename: string, metadata: Record<string, any>) {
 		const attachments = await this.get(name, id);
-		console.log(attachments);
 		const idx = attachments.findIndex(a => a.name === filename);
 		if (idx === -1) throw blitzError.storage.attachedFileNotFound(name, id, filename);
 		attachments[idx].metadata = {...attachments[idx].metadata, ...metadata};
+		await this.updateRecord(name, id, attachments);
+	}
+
+	async rename(name: string, id: number, filename: string, newName: string) {
+		const attachments = await this.get(name, id);
+		const idx = attachments.findIndex(a => a.name === filename);
+		if (idx === -1) throw blitzError.storage.attachedFileNotFound(name, id, filename);
+		let path = this.getPath(name, id);
+		newName = this.sanitizeFilename(newName);
+		newName = this.getUniqueFilename(path, newName);
+		attachments[idx].name = newName;
+		fs.renameSync(Path.join(path, filename), Path.join(path, newName));
 		await this.updateRecord(name, id, attachments);
 	}
 }
