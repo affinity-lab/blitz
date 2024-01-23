@@ -117,6 +117,7 @@ export class Collection<METADATA extends Record<string, any>> {
 	}
 
 	async rename(id: number, filename: string, newName: string) {
+		this.emitter.emit(BLITZ_EVENTS.STORAGE_RENAME, this.name, id, filename);
 		await this.storage.rename(this.name, id, filename, newName);
 	}
 }

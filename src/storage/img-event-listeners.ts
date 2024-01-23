@@ -9,9 +9,9 @@ export function imgEventListeners(imgPath: string, eventEmitter: EventEmitter) {
 	eventEmitter.on(
 		BLITZ_EVENTS.STORAGE_DESTROY,
 		(collection: string, id: number) => {
-			const pattern = path.join(imgPath, `${collection}.${id.toString(36).padStart(6, '0')}*`);
+			const pattern = path.join(imgPath, `${collection}.${id.toString(36).padStart(6, "0")}*`);
 			const files = glob.sync(pattern);
-			files.forEach((file:string) => {
+			files.forEach((file: string) => {
 				try {
 					fs.unlinkSync(file);
 				} catch (err) {
@@ -23,11 +23,23 @@ export function imgEventListeners(imgPath: string, eventEmitter: EventEmitter) {
 	eventEmitter.on(
 		BLITZ_EVENTS.STORAGE_DELETE,
 		(collection: string, id: number, filename: string) => {
-			const pattern = path.join(imgPath, `${collection}.${id.toString(36).padStart(6, '0')}.${filename}*`);
+			const pattern = path.join(imgPath, `${collection}.${id.toString(36).padStart(6, "0")}.${filename}*`).replaceAll("\\", "/");
 			const files = glob.sync(pattern);
-			console.log(pattern);
-			console.log(files);
-			files.forEach((file:string) => {
+			files.forEach((file: string) => {
+				try {
+					fs.unlinkSync(file);
+				} catch (err) {
+
+				}
+			});
+		});
+
+	eventEmitter.on(
+		BLITZ_EVENTS.STORAGE_RENAME,
+		(collection: string, id: number, filename: string) => {
+			const pattern = path.join(imgPath, `${collection}.${id.toString(36).padStart(6, "0")}.${filename}*`).replaceAll("\\", "/");
+			const files = glob.sync(pattern);
+			files.forEach((file: string) => {
 				try {
 					fs.unlinkSync(file);
 				} catch (err) {

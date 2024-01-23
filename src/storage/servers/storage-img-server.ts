@@ -18,7 +18,7 @@ export function storageImgServer(
 			const ext = path.extname(params.file);
 			const file = path.parse(params.file).name;
 			const {catalog, id, img} = params;
-			req.url = `//${catalog}.${id}.${file}.${img}${ext}`;
+			req.url = `//${catalog}.${id.padStart(6, "0")}.${file}.${img}${ext}`;
 			res.getHeader("Cache-Control") === undefined && res.setHeader("Cache-Control", `public, max-age=${maxAge}`);
 			next();
 		},

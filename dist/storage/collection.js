@@ -96,6 +96,7 @@ class Collection {
         await this.storage.setPosition(this.name, id, filename, position);
     }
     async rename(id, filename, newName) {
+        this.emitter.emit(events_1.BLITZ_EVENTS.STORAGE_RENAME, this.name, id, filename);
         await this.storage.rename(this.name, id, filename, newName);
     }
 }

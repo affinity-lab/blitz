@@ -112,7 +112,6 @@ export class CollectionStorage {
 
 	protected async getIndexOfAttachments(name: string, id: number, filename: string, fail: boolean = false) {
 		const attachments = await this.get(name, id);
-		console.log(attachments);
 		const idx = attachments.findIndex(a => a.name === filename);
 		if (idx === -1 && fail) throw blitzError.storage.attachedFileNotFound(name, id, filename);
 		return {attachments, index: idx};

@@ -54,7 +54,6 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 
 	public get name(): string {return getTableName(this.schema);}
 	@MaterializeIt() get baseQueries(): Record<string, PreparedQuery<any>> {
-		console.log(this.name, this.excludedFields);
 		for (let key of Object.keys(this.schema)) if (!this.excludedFields.includes(key)) this.publicFields[key] = (this.schema as Record<string, any>)[key];
 
 		return {

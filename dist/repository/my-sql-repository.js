@@ -88,7 +88,6 @@ class MySqlRepository {
     }
     get name() { return (0, drizzle_orm_1.getTableName)(this.schema); }
     get baseQueries() {
-        console.log(this.name, this.excludedFields);
         for (let key of Object.keys(this.schema))
             if (!this.excludedFields.includes(key))
                 this.publicFields[key] = this.schema[key];
