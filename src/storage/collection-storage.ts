@@ -121,11 +121,13 @@ export class CollectionStorage {
 		this.cache?.del(this.key(name, id));
 		await this.queries.del.execute({name, id});
 		const path = this.getPath(name, id);
-		const files = fs.readdirSync(path);
-		files.map(async (file) =>{
-			fs.unlinkSync(Path.join(path, file))
-		});
-		this.removeStructure(path);
+		if(fs.existsSync(path)){
+			const files = fs.readdirSync(path);
+			files.map(async (file) =>{
+				fs.unlinkSync(Path.join(path, file))
+			});
+			this.removeStructure(path);
+		}
 	}
 
 	protected async updateRecord(name: string, id: number, attachments: Attachments) {
