@@ -40,6 +40,9 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 	}
 
 	protected publicFields: Record<string, any> = {};
+	protected getBeforeUpdate: boolean = false
+	protected getBeforeDelete: boolean = false
+
 	protected excludedFields: Array<string> = [];
 	public files: Array<Collection<Record<string, any>>>;
 
@@ -50,7 +53,9 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 		readonly collectionStorage?: CollectionStorage,
 		protected store?: Cache<InferSelectModel<T>>,
 		protected cache?: Cache<InferSelectModel<T>>
-	) {}
+	) {this.initialize()}
+
+	protected initialize() {}
 
 	public get name(): string {return getTableName(this.schema);}
 	@MaterializeIt() get baseQueries(): Record<string, PreparedQuery<any>> {
@@ -114,10 +119,14 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 
 	async insert(values: InferInsertModel<T>): Promise<number | undefined> {
 		this.eventEmitter.emit(BLITZ_EVENTS.BEFORE_INSERT, this, values);
-		const res = await this.db.insert(this.schema).values(values);
-		const id = res[0].insertId;
-		this.eventEmitter.emit(BLITZ_EVENTS.AFTER_INSERT, this, id, values);
-		return id;
+		if (await this.beforeInsert(values) !== false) {
+			const res = await this.db.insert(this.schema).values(values);
+			const id = res[0].insertId;
+			this.eventEmitter.emit(BLITZ_EVENTS.AFTER_INSERT, this, id, values);
+			await this.afterInsert(id, values);
+			return id;
+		}
+		return undefined
 	}
 
 	async update(values: MySqlUpdateSetSource<T>): Promise<number>;
@@ -130,18 +139,34 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 		}
 		if (typeof id !== "number" || isNaN(id)) throw fatalError("id not provided for update");
 		await this.store?.del(id as number);
-		this.eventEmitter.emit(BLITZ_EVENTS.BEFORE_UPDATE, this, id, values);
-		const res: MySqlRawQueryResult = await this.db.update(this.schema).set(values!).where(sql`id = ${id}`);
-		const affectedRows = res[0].affectedRows;
-		this.eventEmitter.emit(BLITZ_EVENTS.AFTER_UPDATE, this, id, values, affectedRows);
-		return affectedRows;
+		let item = this.getBeforeUpdate ? await this.get(id) : undefined;
+		this.eventEmitter.emit(BLITZ_EVENTS.BEFORE_UPDATE, this, id, values, item);
+		if(await this.beforeUpdate(id, values!, item) !== false) {
+			const res: MySqlRawQueryResult = await this.db.update(this.schema).set(values!).where(sql`id = ${id}`);
+			const affectedRows = res[0].affectedRows;
+			this.eventEmitter.emit(BLITZ_EVENTS.AFTER_UPDATE, this, id, values, affectedRows, item);
+			await this.afterUpdate(id, values!, affectedRows, item);
+			return affectedRows;
+		}
+		return 0;
 	}
 
 	async delete(id: number): Promise<void> {
 		await this.store?.del(id);
-		this.eventEmitter.emit(BLITZ_EVENTS.BEFORE_DELETE, this, id);
-		const res: MySqlRawQueryResult = await this.baseQueries.del.execute({id});
-		const affectedRows = res[0].affectedRows;
-		this.eventEmitter.emit(BLITZ_EVENTS.AFTER_DELETE, this, id, affectedRows);
+		let item = this.getBeforeDelete ? await this.get(id) : undefined;
+		this.eventEmitter.emit(BLITZ_EVENTS.BEFORE_DELETE, this, id, item);
+		if(await this.beforeDelete(id, item) !== false) {
+			const res: MySqlRawQueryResult = await this.baseQueries.del.execute({id});
+			const affectedRows = res[0].affectedRows;
+			this.eventEmitter.emit(BLITZ_EVENTS.AFTER_DELETE, this, id, affectedRows, item);
+			await this.afterDelete(id, affectedRows, item);
+		}
 	}
+
+	protected async beforeUpdate(id: number, values: MySqlUpdateSetSource<T>, item: InferSelectModel<T> | undefined): Promise<boolean | void>  {}
+	protected async beforeDelete(id: number, item: InferSelectModel<T> | undefined): Promise<boolean | void> {}
+	protected async beforeInsert(values: InferInsertModel<T>): Promise<boolean | void> {}
+	protected async afterUpdate(id: number, values: MySqlUpdateSetSource<T>, affectedRows: number, originalItem: InferSelectModel<T> | undefined) {}
+	protected async afterDelete(id: number, affectedRows: number, originalItem: InferSelectModel<T> | undefined) {}
+	protected async afterInsert(id: number, values: InferInsertModel<T>) {}
 }

@@ -76,6 +76,8 @@ class MySqlRepository {
         };
     }
     publicFields = {};
+    getBeforeUpdate = false;
+    getBeforeDelete = false;
     excludedFields = [];
     files;
     constructor(schema, db, eventEmitter, collectionStorage, store, cache) {
@@ -85,7 +87,9 @@ class MySqlRepository {
         this.collectionStorage = collectionStorage;
         this.store = store;
         this.cache = cache;
+        this.initialize();
     }
+    initialize() { }
     get name() { return (0, drizzle_orm_1.getTableName)(this.schema); }
     get baseQueries() {
         for (let key of Object.keys(this.schema))
@@ -144,10 +148,14 @@ class MySqlRepository {
     }
     async insert(values) {
         this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_INSERT, this, values);
-        const res = await this.db.insert(this.schema).values(values);
-        const id = res[0].insertId;
-        this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_INSERT, this, id, values);
-        return id;
+        if (await this.beforeInsert(values) !== false) {
+            const res = await this.db.insert(this.schema).values(values);
+            const id = res[0].insertId;
+            this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_INSERT, this, id, values);
+            await this.afterInsert(id, values);
+            return id;
+        }
+        return undefined;
     }
     async update(id, values) {
         if (typeof id != "number") {
@@ -158,19 +166,34 @@ class MySqlRepository {
         if (typeof id !== "number" || isNaN(id))
             throw (0, affinity_util_1.fatalError)("id not provided for update");
         await this.store?.del(id);
-        this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_UPDATE, this, id, values);
-        const res = await this.db.update(this.schema).set(values).where((0, drizzle_orm_1.sql) `id = ${id}`);
-        const affectedRows = res[0].affectedRows;
-        this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_UPDATE, this, id, values, affectedRows);
-        return affectedRows;
+        let item = this.getBeforeUpdate ? await this.get(id) : undefined;
+        this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_UPDATE, this, id, values, item);
+        if (await this.beforeUpdate(id, values, item) !== false) {
+            const res = await this.db.update(this.schema).set(values).where((0, drizzle_orm_1.sql) `id = ${id}`);
+            const affectedRows = res[0].affectedRows;
+            this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_UPDATE, this, id, values, affectedRows, item);
+            await this.afterUpdate(id, values, affectedRows, item);
+            return affectedRows;
+        }
+        return 0;
     }
     async delete(id) {
         await this.store?.del(id);
-        this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_DELETE, this, id);
-        const res = await this.baseQueries.del.execute({ id });
-        const affectedRows = res[0].affectedRows;
-        this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_DELETE, this, id, affectedRows);
+        let item = this.getBeforeDelete ? await this.get(id) : undefined;
+        this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_DELETE, this, id, item);
+        if (await this.beforeDelete(id, item) !== false) {
+            const res = await this.baseQueries.del.execute({ id });
+            const affectedRows = res[0].affectedRows;
+            this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_DELETE, this, id, affectedRows, item);
+            await this.afterDelete(id, affectedRows, item);
+        }
     }
+    async beforeUpdate(id, values, item) { }
+    async beforeDelete(id, item) { }
+    async beforeInsert(values) { }
+    async afterUpdate(id, values, affectedRows, originalItem) { }
+    async afterDelete(id, affectedRows, originalItem) { }
+    async afterInsert(id, values) { }
 }
 exports.MySqlRepository = MySqlRepository;
 __decorate([

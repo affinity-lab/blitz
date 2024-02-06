@@ -1,6 +1,6 @@
 {
 	"name": "@affinity-lab/blitz",
-	"version": "0.0.25",
+	"version": "0.0.30",
 	"author": "Affinity Lab",
 	"main": "dist/index",
 	"scripts": {

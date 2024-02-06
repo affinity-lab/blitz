@@ -27,4 +27,6 @@ __exportStar(require("./schema-helper"), exports);
 __exportStar(require("./storage/servers/storage-file-server"), exports);
 __exportStar(require("./storage/servers/storage-img-server"), exports);
 __exportStar(require("./storage/img-event-listeners"), exports);
+__exportStar(require("./tag-manager"), exports);
+__exportStar(require("./repository/abstract-tag-repository"), exports);
 //# sourceMappingURL=index.js.map

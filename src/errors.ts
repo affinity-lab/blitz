@@ -12,6 +12,9 @@ export const blitzError = {
 			createErrorData("no more files allowed", {name, id, filename, limit}, 500),
 		attachedFileNotFound: (name: string, id: number, filename: string) =>
 			createErrorData("attached file not found", {name, id, filename}, 500)
+	},
+	tagManager: {
+		itemNotFound: (name: string) => createErrorData(`Must enable getBeforeUpdate and getBeforeDelete for ${name}`, {name}, 500)
 	}
 };
 

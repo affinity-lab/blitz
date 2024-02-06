@@ -31,4 +31,12 @@ export declare const blitzError: {
             silent: boolean;
         };
     };
+    tagManager: {
+        itemNotFound: (name: string) => {
+            message?: string | undefined;
+            details?: Record<string, any> | undefined;
+            httpResponseCode: number;
+            silent: boolean;
+        };
+    };
 };

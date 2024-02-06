@@ -9,6 +9,9 @@ exports.blitzError = {
         extensionNotAllowed: (name, id, filename, allowedExtensions) => (0, affinity_util_1.createErrorData)("file extension is not allowed", { name, id, filename, allowedExtensions }, 500),
         tooManyFiles: (name, id, filename, limit) => (0, affinity_util_1.createErrorData)("no more files allowed", { name, id, filename, limit }, 500),
         attachedFileNotFound: (name, id, filename) => (0, affinity_util_1.createErrorData)("attached file not found", { name, id, filename }, 500)
+    },
+    tagManager: {
+        itemNotFound: (name) => (0, affinity_util_1.createErrorData)(`Must enable getBeforeUpdate and getBeforeDelete for ${name}`, { name }, 500)
     }
 };
 (0, affinity_util_1.preprocessErrorTree)(exports.blitzError, "BLITZ");

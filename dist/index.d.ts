@@ -11,3 +11,5 @@ export * from "./schema-helper";
 export * from "./storage/servers/storage-file-server";
 export * from "./storage/servers/storage-img-server";
 export * from "./storage/img-event-listeners";
+export * from "./tag-manager";
+export * from "./repository/abstract-tag-repository";

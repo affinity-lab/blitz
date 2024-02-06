@@ -16,9 +16,12 @@ export declare class MySqlRepository<S extends Record<string, any> = any, T exte
     static cache(ttl?: number): MethodDecorator;
     static store(): MethodDecorator;
     protected publicFields: Record<string, any>;
+    protected getBeforeUpdate: boolean;
+    protected getBeforeDelete: boolean;
     protected excludedFields: Array<string>;
     files: Array<Collection<Record<string, any>>>;
     constructor(schema: T, db: MySql2Database<S>, eventEmitter: EventEmitter, collectionStorage?: CollectionStorage | undefined, store?: Cache<{ [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; } extends infer T_1 ? { [K in keyof T_1]: { [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; }[K]; } : never> | undefined, cache?: Cache<{ [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; } extends infer T_1 ? { [K in keyof T_1]: { [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; }[K]; } : never> | undefined);
+    protected initialize(): void;
     get name(): string;
     get baseQueries(): Record<string, PreparedQuery<any>>;
     protected itemToKeyValue(items: Array<InferSelectModel<T>>): Array<KeyValue<InferSelectModel<T>>>;
@@ -34,4 +37,10 @@ export declare class MySqlRepository<S extends Record<string, any> = any, T exte
     update(values: MySqlUpdateSetSource<T>): Promise<number>;
     update(id: number, values: MySqlUpdateSetSource<T>): Promise<number>;
     delete(id: number): Promise<void>;
+    protected beforeUpdate(id: number, values: MySqlUpdateSetSource<T>, item: InferSelectModel<T> | undefined): Promise<boolean | void>;
+    protected beforeDelete(id: number, item: InferSelectModel<T> | undefined): Promise<boolean | void>;
+    protected beforeInsert(values: InferInsertModel<T>): Promise<boolean | void>;
+    protected afterUpdate(id: number, values: MySqlUpdateSetSource<T>, affectedRows: number, originalItem: InferSelectModel<T> | undefined): Promise<void>;
+    protected afterDelete(id: number, affectedRows: number, originalItem: InferSelectModel<T> | undefined): Promise<void>;
+    protected afterInsert(id: number, values: InferInsertModel<T>): Promise<void>;
 }
