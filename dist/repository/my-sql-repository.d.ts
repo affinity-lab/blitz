@@ -6,6 +6,7 @@ import { Cache, type KeyValue } from "@affinity-lab/affinity-util";
 import { EventEmitter } from "events";
 import { CollectionStorage } from "../storage/collection-storage";
 import { Collection } from "../storage/collection";
+import { AbstractTagRepository } from "./abstract-tag-repository";
 export declare class MySqlRepository<S extends Record<string, any> = any, T extends MySqlTable = any> {
     readonly schema: T;
     readonly db: MySql2Database<S>;
@@ -18,6 +19,7 @@ export declare class MySqlRepository<S extends Record<string, any> = any, T exte
     protected publicFields: Record<string, any>;
     protected getBeforeUpdate: boolean;
     protected getBeforeDelete: boolean;
+    protected get tagRepos(): Array<AbstractTagRepository>;
     protected excludedFields: Array<string>;
     files: Array<Collection<Record<string, any>>>;
     constructor(schema: T, db: MySql2Database<S>, eventEmitter: EventEmitter, collectionStorage?: CollectionStorage | undefined, store?: Cache<{ [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; } extends infer T_1 ? { [K in keyof T_1]: { [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; }[K]; } : never> | undefined, cache?: Cache<{ [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; } extends infer T_1 ? { [K in keyof T_1]: { [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; }[K]; } : never> | undefined);

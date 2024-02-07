@@ -78,6 +78,7 @@ class MySqlRepository {
     publicFields = {};
     getBeforeUpdate = false;
     getBeforeDelete = false;
+    get tagRepos() { return []; }
     excludedFields = [];
     files;
     constructor(schema, db, eventEmitter, collectionStorage, store, cache) {
@@ -188,11 +189,23 @@ class MySqlRepository {
             await this.afterDelete(id, affectedRows, item);
         }
     }
-    async beforeUpdate(id, values, item) { }
+    async beforeUpdate(id, values, item) {
+        for (let repo of this.tagRepos)
+            repo.tagManager.prepare(this, values);
+    }
     async beforeDelete(id, item) { }
-    async beforeInsert(values) { }
-    async afterUpdate(id, values, affectedRows, originalItem) { }
-    async afterDelete(id, affectedRows, originalItem) { }
+    async beforeInsert(values) {
+        for (let repo of this.tagRepos)
+            repo.tagManager.prepare(this, values);
+    }
+    async afterUpdate(id, values, affectedRows, originalItem) {
+        for (let repo of this.tagRepos)
+            await repo.tagManager.update(this, originalItem, values);
+    }
+    async afterDelete(id, affectedRows, originalItem) {
+        for (let repo of this.tagRepos)
+            await repo.tagManager.update(this, originalItem);
+    }
     async afterInsert(id, values) { }
 }
 exports.MySqlRepository = MySqlRepository;

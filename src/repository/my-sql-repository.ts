@@ -7,6 +7,7 @@ import {EventEmitter} from "events";
 import {BLITZ_EVENTS} from "../events";
 import {CollectionStorage} from "../storage/collection-storage";
 import {Collection} from "../storage/collection";
+import {AbstractTagRepository} from "./abstract-tag-repository";
 
 
 export class MySqlRepository<S extends Record<string, any> = any, T extends MySqlTable = any> {
@@ -40,8 +41,9 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 	}
 
 	protected publicFields: Record<string, any> = {};
-	protected getBeforeUpdate: boolean = false
-	protected getBeforeDelete: boolean = false
+	protected getBeforeUpdate: boolean = false;
+	protected getBeforeDelete: boolean = false;
+	protected get tagRepos(): Array<AbstractTagRepository> {return [];}
 
 	protected excludedFields: Array<string> = [];
 	public files: Array<Collection<Record<string, any>>>;
@@ -163,10 +165,18 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 		}
 	}
 
-	protected async beforeUpdate(id: number, values: MySqlUpdateSetSource<T>, item: InferSelectModel<T> | undefined): Promise<boolean | void>  {}
+	protected async beforeUpdate(id: number, values: MySqlUpdateSetSource<T>, item: InferSelectModel<T> | undefined): Promise<boolean | void>  {
+		for (let repo of this.tagRepos) repo.tagManager.prepare(this, values);
+	}
 	protected async beforeDelete(id: number, item: InferSelectModel<T> | undefined): Promise<boolean | void> {}
-	protected async beforeInsert(values: InferInsertModel<T>): Promise<boolean | void> {}
-	protected async afterUpdate(id: number, values: MySqlUpdateSetSource<T>, affectedRows: number, originalItem: InferSelectModel<T> | undefined) {}
-	protected async afterDelete(id: number, affectedRows: number, originalItem: InferSelectModel<T> | undefined) {}
+	protected async beforeInsert(values: InferInsertModel<T>): Promise<boolean | void> {
+		for (let repo of this.tagRepos) repo.tagManager.prepare(this, values);
+	}
+	protected async afterUpdate(id: number, values: MySqlUpdateSetSource<T>, affectedRows: number, originalItem: InferSelectModel<T> | undefined) {
+		for (let repo of this.tagRepos) await repo.tagManager.update(this, originalItem, values);
+	}
+	protected async afterDelete(id: number, affectedRows: number, originalItem: InferSelectModel<T> | undefined) {
+		for (let repo of this.tagRepos) await repo.tagManager.update(this, originalItem);
+	}
 	protected async afterInsert(id: number, values: InferInsertModel<T>) {}
 }
