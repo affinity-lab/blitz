@@ -49,11 +49,17 @@ class TagManager {
             }
         }
     }
-    async add(tags) {
+    async changePredefined(name, to) {
+        let item = await this.tableRepo.getOneByName(name);
+        if (!item)
+            throw errors_1.blitzError.tagManager.itemNotFound(name);
+        await this.tableRepo.update(item.id, { predefined: to });
+    }
+    async add(tags, predefined = false) {
         let items = (await this.tableRepo.getByName(tags)).map(x => x.name);
         let toAdd = tags.filter(x => !items.includes(x));
         for (let tag of toAdd) {
-            await this.tableRepo.insert({ name: tag, predefined: false });
+            await this.tableRepo.insert({ name: tag, predefined });
         }
     }
     async rename(oldName, newName) {

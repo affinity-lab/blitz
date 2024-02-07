@@ -19,6 +19,22 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 		this.tagManager = new TagManager(this, this.usages);
 	}
 
+	async createTag(tag: string) {
+		await this.tagManager.add([tag], true);
+	}
+
+	async renameTag(oldName: string, newName: string) {
+		await this.tagManager.rename(oldName, newName);
+	}
+
+	async changePredefinedTag(name: string, to: boolean) {
+		await this.tagManager.changePredefined(name, to);
+	}
+
+	async deleteTag(tag: string) {
+		await this.tagManager.delete([tag]);
+	}
+
 	getAll() {
 		return this.queries.getAll.execute().then(r => r.map(i => i.tag));
 	}

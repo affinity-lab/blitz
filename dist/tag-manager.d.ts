@@ -12,6 +12,7 @@ export declare class TagManager {
     prepare(repository: MySqlRepository, values: MySqlUpdateSetSource<any> | InferInsertModel<any>): void;
     update(repository: MySqlRepository, originalItem: InferInsertModel<any> | undefined, values?: MySqlUpdateSetSource<any>): Promise<void>;
     delete(tags: Array<string>): Promise<void>;
-    add(tags: Array<string>): Promise<void>;
+    changePredefined(name: string, to: boolean): Promise<void>;
+    add(tags: Array<string>, predefined?: boolean): Promise<void>;
     rename(oldName: string, newName: string): Promise<void>;
 }
