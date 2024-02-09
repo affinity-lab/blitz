@@ -69,6 +69,7 @@ export class TagManager {
 		let item = await this.tableRepo.getOneByName(name);
 		if(!item) throw blitzError.tagManager.itemNotFound(name);
 		await this.tableRepo.update(item.id, {predefined: to});
+		if(!to) this.delete([name]);
 	}
 
 	async add(tags: Array<string>, predefined: boolean = false) {
