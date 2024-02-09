@@ -30,8 +30,9 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 	}
 
 	async deleteTag(tag: string) {
-		await this.tagManager.delete([tag]);
+		await this.tagManager.deletePredefined(tag);
 	}
+
 
 	getAll() {
 		return this.queries.getAll.execute().then(r => r.map(i => i.name)).then(r=> r.join(','));

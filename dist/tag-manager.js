@@ -51,6 +51,12 @@ class TagManager {
             }
         }
     }
+    async deletePredefined(name) {
+        let item = await this.tableRepo.getOneByName(name);
+        if (!item)
+            errors_1.blitzError.tagManager.itemNotFound(name);
+        return this.tableRepo.delete(item.id);
+    }
     async changePredefined(name, to) {
         let item = await this.tableRepo.getOneByName(name);
         if (!item)

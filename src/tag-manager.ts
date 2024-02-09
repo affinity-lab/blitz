@@ -59,6 +59,12 @@ export class TagManager {
 		}
 	}
 
+	async deletePredefined(name: string) {
+		let item = await this.tableRepo.getOneByName(name);
+		if(!item) blitzError.tagManager.itemNotFound(name);
+		return this.tableRepo.delete(item!.id);
+	}
+
 	async changePredefined(name: string, to: boolean) {
 		let item = await this.tableRepo.getOneByName(name);
 		if(!item) throw blitzError.tagManager.itemNotFound(name);
