@@ -13,10 +13,8 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 		getByNameNonPredefined: this.db.select().from(this.schema).where(and(sql`name IN (${sql.placeholder("names")})`, eq(sql`predefined`, false))).prepare()
 	}
 
-	abstract get usages(): Array<{ "repo": MySqlRepository, "field": string }>;
-
-	protected initialize() {
-		this.tagManager = new TagManager(this, this.usages);
+	public initialize() {
+		this.tagManager = new TagManager(this);
 	}
 
 	async createTag(tag: string) {
@@ -36,7 +34,11 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 	}
 
 	getAll() {
-		return this.queries.getAll.execute().then(r => r.map(i => i.tag));
+		return this.queries.getAll.execute().then(r => r.map(i => i.name)).then(r=> r.join(','));
+	}
+
+	getTags() {
+		return this.queries.getAll.execute().then(r=> r.map(i=> {return {name: i.name, predefined: i.predefined}}));
 	}
 
 	getByName(names: Array<string>) {

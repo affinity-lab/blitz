@@ -5,10 +5,12 @@ const drizzle_orm_1 = require("drizzle-orm");
 const errors_1 = require("./errors");
 class TagManager {
     tableRepo;
-    usages;
-    constructor(tableRepo, usages) {
+    usages = [];
+    constructor(tableRepo) {
         this.tableRepo = tableRepo;
-        this.usages = usages;
+    }
+    addUsage(usage) {
+        this.usages.push(...(Array.isArray(usage) ? usage : [usage]));
     }
     prepare(repository, values) {
         for (let usage of this.usages) {

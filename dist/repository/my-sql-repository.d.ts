@@ -23,7 +23,7 @@ export declare class MySqlRepository<S extends Record<string, any> = any, T exte
     protected excludedFields: Array<string>;
     files: Array<Collection<Record<string, any>>>;
     constructor(schema: T, db: MySql2Database<S>, eventEmitter: EventEmitter, collectionStorage?: CollectionStorage | undefined, store?: Cache<{ [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; } extends infer T_1 ? { [K in keyof T_1]: { [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; }[K]; } : never> | undefined, cache?: Cache<{ [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; } extends infer T_1 ? { [K in keyof T_1]: { [Key in keyof T["_"]["columns"] & string as Key]: T["_"]["columns"][Key]["_"]["notNull"] extends true ? T["_"]["columns"][Key]["_"]["data"] : T["_"]["columns"][Key]["_"]["data"] | null; }[K]; } : never> | undefined);
-    protected initialize(): void;
+    initialize(): void;
     get name(): string;
     get baseQueries(): Record<string, PreparedQuery<any>>;
     protected itemToKeyValue(items: Array<InferSelectModel<T>>): Array<KeyValue<InferSelectModel<T>>>;

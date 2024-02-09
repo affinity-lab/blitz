@@ -88,7 +88,6 @@ class MySqlRepository {
         this.collectionStorage = collectionStorage;
         this.store = store;
         this.cache = cache;
-        this.initialize();
     }
     initialize() { }
     get name() { return (0, drizzle_orm_1.getTableName)(this.schema); }
@@ -191,20 +190,24 @@ class MySqlRepository {
     }
     async beforeUpdate(id, values, item) {
         for (let repo of this.tagRepos)
-            repo.tagManager.prepare(this, values);
+            if (!!repo.tagManager)
+                repo.tagManager.prepare(this, values);
     }
     async beforeDelete(id, item) { }
     async beforeInsert(values) {
         for (let repo of this.tagRepos)
-            repo.tagManager.prepare(this, values);
+            if (!!repo.tagManager)
+                repo.tagManager.prepare(this, values);
     }
     async afterUpdate(id, values, affectedRows, originalItem) {
         for (let repo of this.tagRepos)
-            await repo.tagManager.update(this, originalItem, values);
+            if (!!repo.tagManager)
+                await repo.tagManager.update(this, originalItem, values);
     }
     async afterDelete(id, affectedRows, originalItem) {
         for (let repo of this.tagRepos)
-            await repo.tagManager.update(this, originalItem);
+            if (!!repo.tagManager)
+                await repo.tagManager.update(this, originalItem);
     }
     async afterInsert(id, values) { }
 }

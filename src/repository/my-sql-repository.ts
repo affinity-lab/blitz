@@ -55,9 +55,9 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 		readonly collectionStorage?: CollectionStorage,
 		protected store?: Cache<InferSelectModel<T>>,
 		protected cache?: Cache<InferSelectModel<T>>
-	) {this.initialize()}
+	) {}
 
-	protected initialize() {}
+	public initialize() {}
 
 	public get name(): string {return getTableName(this.schema);}
 	@MaterializeIt() get baseQueries(): Record<string, PreparedQuery<any>> {
@@ -166,17 +166,17 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 	}
 
 	protected async beforeUpdate(id: number, values: MySqlUpdateSetSource<T>, item: InferSelectModel<T> | undefined): Promise<boolean | void>  {
-		for (let repo of this.tagRepos) repo.tagManager.prepare(this, values);
+		for (let repo of this.tagRepos) if(!!repo.tagManager) repo.tagManager.prepare(this, values);
 	}
 	protected async beforeDelete(id: number, item: InferSelectModel<T> | undefined): Promise<boolean | void> {}
 	protected async beforeInsert(values: InferInsertModel<T>): Promise<boolean | void> {
-		for (let repo of this.tagRepos) repo.tagManager.prepare(this, values);
+		for (let repo of this.tagRepos) if(!!repo.tagManager) repo.tagManager.prepare(this, values);
 	}
 	protected async afterUpdate(id: number, values: MySqlUpdateSetSource<T>, affectedRows: number, originalItem: InferSelectModel<T> | undefined) {
-		for (let repo of this.tagRepos) await repo.tagManager.update(this, originalItem, values);
+		for (let repo of this.tagRepos) if(!!repo.tagManager) await repo.tagManager.update(this, originalItem, values);
 	}
 	protected async afterDelete(id: number, affectedRows: number, originalItem: InferSelectModel<T> | undefined) {
-		for (let repo of this.tagRepos) await repo.tagManager.update(this, originalItem);
+		for (let repo of this.tagRepos) if(!!repo.tagManager) await repo.tagManager.update(this, originalItem);
 	}
 	protected async afterInsert(id: number, values: InferInsertModel<T>) {}
 }

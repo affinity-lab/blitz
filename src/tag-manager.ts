@@ -4,12 +4,17 @@ import {MySqlUpdateSetSource} from "drizzle-orm/mysql-core";
 import {and, InferInsertModel, not, sql} from "drizzle-orm";
 import {blitzError} from "./errors";
 
+type MaybeArray<T> = T | Array<T>;
 
 export class TagManager {
+	private usages: Array<{ "repo": MySqlRepository, "field": string }> = []
 	constructor(
 		private tableRepo: AbstractTagRepository,
-		private usages: Array<{ "repo": MySqlRepository, "field": string }>
-	) {
+	) {}
+
+
+	addUsage(usage: MaybeArray<{ "repo": MySqlRepository, "field": string }>) {
+		this.usages.push(...(Array.isArray(usage) ? usage : [usage]));
 	}
 
 	prepare(repository: MySqlRepository, values: MySqlUpdateSetSource<any> | InferInsertModel<any>) {

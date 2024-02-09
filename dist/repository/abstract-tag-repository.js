@@ -13,7 +13,7 @@ class AbstractTagRepository extends my_sql_repository_1.MySqlRepository {
         getByNameNonPredefined: this.db.select().from(this.schema).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.sql) `name IN (${drizzle_orm_1.sql.placeholder("names")})`, (0, drizzle_orm_1.eq)((0, drizzle_orm_1.sql) `predefined`, false))).prepare()
     };
     initialize() {
-        this.tagManager = new tag_manager_1.TagManager(this, this.usages);
+        this.tagManager = new tag_manager_1.TagManager(this);
     }
     async createTag(tag) {
         await this.tagManager.add([tag], true);
@@ -28,7 +28,10 @@ class AbstractTagRepository extends my_sql_repository_1.MySqlRepository {
         await this.tagManager.delete([tag]);
     }
     getAll() {
-        return this.queries.getAll.execute().then(r => r.map(i => i.tag));
+        return this.queries.getAll.execute().then(r => r.map(i => i.name)).then(r => r.join(','));
+    }
+    getTags() {
+        return this.queries.getAll.execute().then(r => r.map(i => { return { name: i.name, predefined: i.predefined }; }));
     }
     getByName(names) {
         return this.queries.getByName.execute({ names });
