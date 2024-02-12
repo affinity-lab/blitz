@@ -9,7 +9,7 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 	private queries = {
 		getAll: this.db.select().from(this.schema).orderBy(sql`name`).prepare(),
 		getByName: this.db.select().from(this.schema).where(sql`name IN (${sql.placeholder("names")})`).prepare(),
-		getOneByName: this.db.select().from(this.schema).where(sql`name = (${sql.placeholder("name")})`).prepare(),
+		getOneByName: this.db.select().from(this.schema).where(sql`name = ${sql.placeholder("name")}`).prepare(),
 		getByNameNonPredefined: this.db.select().from(this.schema).where(and(sql`name IN (${sql.placeholder("names")})`, eq(sql`predefined`, false))).prepare()
 	}
 

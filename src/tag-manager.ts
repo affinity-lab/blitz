@@ -43,6 +43,7 @@ export class TagManager {
 
 
 	async delete(tags: Array<string>) {
+		if(tags.length === 0) return;
 		let items = await this.tableRepo.getByNameNonPredefined(tags);
 		for (let item of items) {
 			let doDelete = true;
@@ -69,10 +70,11 @@ export class TagManager {
 		let item = await this.tableRepo.getOneByName(name);
 		if(!item) throw blitzError.tagManager.itemNotFound(name);
 		await this.tableRepo.update(item.id, {predefined: to});
-		if(!to) this.delete([name]);
+		if(!to) await this.delete([name]);
 	}
 
 	async add(tags: Array<string>, predefined: boolean = false) {
+		if(tags.length === 0) return;
 		let items = (await this.tableRepo.getByName(tags)).map(x => x.name);
 		let toAdd = tags.filter(x => !items.includes(x));
 		for (let tag of toAdd) {

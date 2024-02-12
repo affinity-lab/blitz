@@ -9,7 +9,7 @@ class AbstractTagRepository extends my_sql_repository_1.MySqlRepository {
     queries = {
         getAll: this.db.select().from(this.schema).orderBy((0, drizzle_orm_1.sql) `name`).prepare(),
         getByName: this.db.select().from(this.schema).where((0, drizzle_orm_1.sql) `name IN (${drizzle_orm_1.sql.placeholder("names")})`).prepare(),
-        getOneByName: this.db.select().from(this.schema).where((0, drizzle_orm_1.sql) `name = (${drizzle_orm_1.sql.placeholder("name")})`).prepare(),
+        getOneByName: this.db.select().from(this.schema).where((0, drizzle_orm_1.sql) `name = ${drizzle_orm_1.sql.placeholder("name")}`).prepare(),
         getByNameNonPredefined: this.db.select().from(this.schema).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.sql) `name IN (${drizzle_orm_1.sql.placeholder("names")})`, (0, drizzle_orm_1.eq)((0, drizzle_orm_1.sql) `predefined`, false))).prepare()
     };
     initialize() {

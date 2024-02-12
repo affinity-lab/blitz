@@ -36,6 +36,8 @@ class TagManager {
         await this.delete(prev.filter(x => !curr.includes(x)));
     }
     async delete(tags) {
+        if (tags.length === 0)
+            return;
         let items = await this.tableRepo.getByNameNonPredefined(tags);
         for (let item of items) {
             let doDelete = true;
@@ -63,9 +65,11 @@ class TagManager {
             throw errors_1.blitzError.tagManager.itemNotFound(name);
         await this.tableRepo.update(item.id, { predefined: to });
         if (!to)
-            this.delete([name]);
+            await this.delete([name]);
     }
     async add(tags, predefined = false) {
+        if (tags.length === 0)
+            return;
         let items = (await this.tableRepo.getByName(tags)).map(x => x.name);
         let toAdd = tags.filter(x => !items.includes(x));
         for (let tag of toAdd) {
