@@ -42,7 +42,7 @@ class TagManager {
         for (let item of items) {
             let doDelete = true;
             for (let usage of this.usages) {
-                let res = await usage.repo.db.select().from(usage.repo.schema).where((0, drizzle_orm_1.sql) `FIND_IN_SET("${item.name}", ${usage.field})`).limit(1).execute();
+                let res = await usage.repo.db.select().from(usage.repo.schema).where((0, drizzle_orm_1.sql) `FIND_IN_SET(${item.name}, ${usage.repo.schema[usage.field]})`).limit(1).execute();
                 if (res.length !== 0) {
                     doDelete = false;
                     break;

@@ -34,13 +34,13 @@ class AbstractTagRepository extends my_sql_repository_1.MySqlRepository {
         return this.queries.getAll.execute().then(r => r.map(i => { return { name: i.name, predefined: i.predefined }; }));
     }
     getByName(names) {
-        return this.queries.getByName.execute({ names });
+        return this.queries.getByName.execute({ names: names.join(", ") });
     }
     getOneByName(name) {
         return this.queries.getOneByName.execute({ name }).then(r => r.length ? r[0] : undefined);
     }
     getByNameNonPredefined(names) {
-        return this.queries.getByNameNonPredefined.execute({ names });
+        return this.queries.getByNameNonPredefined.execute({ names: names.join(", ") });
     }
 }
 exports.AbstractTagRepository = AbstractTagRepository;

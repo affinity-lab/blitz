@@ -43,7 +43,7 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 	}
 
 	getByName(names: Array<string>) {
-		return this.queries.getByName.execute({names});
+		return this.queries.getByName.execute({names: names.join(", ")});
 	}
 
 	getOneByName(name: string) {
@@ -51,6 +51,6 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 	}
 
 	getByNameNonPredefined(names: Array<string>) {
-		return this.queries.getByNameNonPredefined.execute({names});
+		return this.queries.getByNameNonPredefined.execute({names: names.join(", ")});
 	}
 }
