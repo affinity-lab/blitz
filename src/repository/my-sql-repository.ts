@@ -144,7 +144,10 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 		let item = this.getBeforeUpdate ? await this.get(id) : undefined;
 		this.eventEmitter.emit(BLITZ_EVENTS.BEFORE_UPDATE, this, id, values, item);
 		if(await this.beforeUpdate(id, values!, item) !== false) {
-			const res: MySqlRawQueryResult = await this.db.update(this.schema).set(values!).where(sql`id = ${id}`);
+			let updateWith: Record<string, any> = {};
+			let keys = Object.keys(this.schema);
+			for(let key of Object.keys(values!)) if (keys.includes(key)) updateWith[key] = values![key];
+			const res: MySqlRawQueryResult = await this.db.update(this.schema).set(updateWith).where(sql`id = ${id}`);
 			const affectedRows = res[0].affectedRows;
 			this.eventEmitter.emit(BLITZ_EVENTS.AFTER_UPDATE, this, id, values, affectedRows, item);
 			await this.afterUpdate(id, values!, affectedRows, item);

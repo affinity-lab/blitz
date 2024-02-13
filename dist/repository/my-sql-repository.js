@@ -169,7 +169,12 @@ class MySqlRepository {
         let item = this.getBeforeUpdate ? await this.get(id) : undefined;
         this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_UPDATE, this, id, values, item);
         if (await this.beforeUpdate(id, values, item) !== false) {
-            const res = await this.db.update(this.schema).set(values).where((0, drizzle_orm_1.sql) `id = ${id}`);
+            let updateWith = {};
+            let keys = Object.keys(this.schema);
+            for (let key of Object.keys(values))
+                if (keys.includes(key))
+                    updateWith[key] = values[key];
+            const res = await this.db.update(this.schema).set(updateWith).where((0, drizzle_orm_1.sql) `id = ${id}`);
             const affectedRows = res[0].affectedRows;
             this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_UPDATE, this, id, values, affectedRows, item);
             await this.afterUpdate(id, values, affectedRows, item);
