@@ -15,6 +15,8 @@ class TagManager {
     prepare(repository, values) {
         for (let usage of this.usages) {
             if (usage.repo === repository) {
+                if (!values[usage.field])
+                    values[usage.field] = "";
                 values[usage.field] = [...new Set(values[usage.field].trim().split(',').map(x => x.trim()).filter(x => !!x))].join(',');
             }
         }

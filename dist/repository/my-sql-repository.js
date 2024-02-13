@@ -149,7 +149,12 @@ class MySqlRepository {
     async insert(values) {
         this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_INSERT, this, values);
         if (await this.beforeInsert(values) !== false) {
-            const res = await this.db.insert(this.schema).values(values);
+            let insertWith = {};
+            let keys = Object.keys(this.schema);
+            for (let key of Object.keys(values))
+                if (keys.includes(key))
+                    insertWith[key] = values[key];
+            const res = await this.db.insert(this.schema).values(insertWith);
             const id = res[0].insertId;
             this.eventEmitter.emit(events_1.BLITZ_EVENTS.AFTER_INSERT, this, id, values);
             await this.afterInsert(id, values);

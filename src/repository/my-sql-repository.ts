@@ -122,7 +122,10 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 	async insert(values: InferInsertModel<T>): Promise<number | undefined> {
 		this.eventEmitter.emit(BLITZ_EVENTS.BEFORE_INSERT, this, values);
 		if (await this.beforeInsert(values) !== false) {
-			const res = await this.db.insert(this.schema).values(values);
+			let insertWith: InferInsertModel<T> = {} as InferInsertModel<T>;
+			let keys = Object.keys(this.schema);
+			for(let key of Object.keys(values)) if (keys.includes(key)) insertWith[key as keyof InferInsertModel<T>] = values[key as keyof InferInsertModel<T>];
+			const res = await this.db.insert(this.schema).values(insertWith);
 			const id = res[0].insertId;
 			this.eventEmitter.emit(BLITZ_EVENTS.AFTER_INSERT, this, id, values);
 			await this.afterInsert(id, values);
