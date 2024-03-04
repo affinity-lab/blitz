@@ -1,6 +1,6 @@
 import { MySqlTable } from "drizzle-orm/mysql-core";
 import { MySql2Database } from "drizzle-orm/mysql2";
-import { Cache } from "@affinity-lab/affinity-util";
+import { Cache } from "@affinity-lab/util";
 import { Attachments, TmpFile } from "./types";
 export declare class CollectionStorage {
     readonly path: string;

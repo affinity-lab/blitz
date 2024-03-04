@@ -1,6 +1,6 @@
 import { Collection } from "../collection";
 import { ImgFocus, ImgRGB, MetaField, Rules } from "../types";
-import { TmpFile } from "@affinity-lab/affinity-util";
+import { TmpFile } from "@affinity-lab/util";
 import { MySqlRepository } from "../../repository/my-sql-repository";
 export declare class ImageCollection extends Collection<{
     title: string;

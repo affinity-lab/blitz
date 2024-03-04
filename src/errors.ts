@@ -1,4 +1,4 @@
-import {createErrorData, preprocessErrorTree} from "@affinity-lab/affinity-util";
+import {createErrorData, preprocessErrorTree} from "@affinity-lab/util";
 
 export const blitzError = {
 	storage: {

@@ -34,7 +34,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MySqlRepository = void 0;
 const drizzle_orm_1 = require("drizzle-orm");
-const affinity_util_1 = require("@affinity-lab/affinity-util");
+const util_1 = require("@affinity-lab/util");
 const crypto = __importStar(require("crypto"));
 const events_1 = require("../events");
 class MySqlRepository {
@@ -169,7 +169,7 @@ class MySqlRepository {
             delete (values.id);
         }
         if (typeof id !== "number" || isNaN(id))
-            throw (0, affinity_util_1.fatalError)("id not provided for update");
+            throw (0, util_1.fatalError)("id not provided for update");
         await this.store?.del(id);
         let item = this.getBeforeUpdate ? await this.get(id) : undefined;
         this.eventEmitter.emit(events_1.BLITZ_EVENTS.BEFORE_UPDATE, this, id, values, item);
@@ -223,7 +223,7 @@ class MySqlRepository {
 }
 exports.MySqlRepository = MySqlRepository;
 __decorate([
-    (0, affinity_util_1.MaterializeIt)(),
+    (0, util_1.MaterializeIt)(),
     __metadata("design:type", Object),
     __metadata("design:paramtypes", [])
 ], MySqlRepository.prototype, "baseQueries", null);

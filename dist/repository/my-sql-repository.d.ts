@@ -2,7 +2,7 @@
 import { MySqlTable, MySqlUpdateSetSource, PreparedQuery } from "drizzle-orm/mysql-core";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { MySql2Database } from "drizzle-orm/mysql2";
-import { Cache, type KeyValue } from "@affinity-lab/affinity-util";
+import { Cache, type KeyValue } from "@affinity-lab/util";
 import { EventEmitter } from "events";
 import { CollectionStorage } from "../storage/collection-storage";
 import { Collection } from "../storage/collection";

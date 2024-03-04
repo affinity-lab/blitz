@@ -1,17 +1,18 @@
 {
 	"name": "@affinity-lab/blitz",
-	"version": "0.0.41",
+	"version": "0.0.44",
 	"author": "Affinity Lab",
 	"main": "dist/index",
 	"scripts": {
 		"build": "npx tsc && npm version patch --no-git-tag-version",
-		"prebuild": "rimraf ./dist"
+		"prebuild": "rimraf ./dist",
+		"pub": "npm publish --access public"
 	},
 	"files": [
-		"./**/*"
+		"dist/*"
 	],
 	"dependencies": {
-		"@affinity-lab/affinity-util": "github:affinity-lab/affinity-util",
+		"@affinity-lab/util": "^1.1.2",
 		"drizzle-orm": "^0.29.0",
 		"express": "^4.18.2",
 		"glob": "^10.3.10",

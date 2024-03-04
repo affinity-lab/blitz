@@ -1,6 +1,6 @@
 import {MySqlTable, PreparedQuery} from "drizzle-orm/mysql-core";
 import {MySql2Database} from "drizzle-orm/mysql2";
-import {Cache} from "@affinity-lab/affinity-util";
+import {Cache} from "@affinity-lab/util";
 import {and, eq, sql} from "drizzle-orm";
 import fs from "fs";
 import Path from "path";

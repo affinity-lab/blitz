@@ -1,4 +1,4 @@
-import {scopeEnum} from "@affinity-lab/affinity-util";
+import {scopeEnum} from "@affinity-lab/util";
 
 export enum BLITZ_EVENTS {
 	BEFORE_INSERT = "BEFORE_INSERT",

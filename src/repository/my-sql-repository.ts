@@ -1,7 +1,7 @@
 import {MySqlTable, MySqlUpdateSetSource, PreparedQuery} from "drizzle-orm/mysql-core";
 import {getTableName, InferInsertModel, InferSelectModel, sql} from "drizzle-orm";
 import {MySql2Database, MySqlRawQueryResult} from "drizzle-orm/mysql2";
-import {Cache, fatalError, type KeyValue, MaterializeIt} from "@affinity-lab/affinity-util";
+import {Cache, fatalError, type KeyValue, MaterializeIt} from "@affinity-lab/util";
 import * as crypto from "crypto";
 import {EventEmitter} from "events";
 import {BLITZ_EVENTS} from "../events";

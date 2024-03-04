@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BLITZ_EVENTS = void 0;
-const affinity_util_1 = require("@affinity-lab/affinity-util");
+const util_1 = require("@affinity-lab/util");
 var BLITZ_EVENTS;
 (function (BLITZ_EVENTS) {
     BLITZ_EVENTS["BEFORE_INSERT"] = "BEFORE_INSERT";
@@ -14,5 +14,5 @@ var BLITZ_EVENTS;
     BLITZ_EVENTS["STORAGE_DELETE"] = "STORAGE_DELETE";
     BLITZ_EVENTS["STORAGE_RENAME"] = "STORAGE_RENAME";
 })(BLITZ_EVENTS || (exports.BLITZ_EVENTS = BLITZ_EVENTS = {}));
-(0, affinity_util_1.scopeEnum)(BLITZ_EVENTS, "BLITZ_EVENTS");
+(0, util_1.scopeEnum)(BLITZ_EVENTS, "BLITZ_EVENTS");
 //# sourceMappingURL=events.js.map

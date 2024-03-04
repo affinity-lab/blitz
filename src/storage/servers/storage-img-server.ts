@@ -2,7 +2,7 @@ import express, {Express, NextFunction, Request, Response} from "express";
 import * as fs from "fs";
 import path from "path";
 import sharp from "sharp";
-import {fatalError} from "@affinity-lab/affinity-util";
+import {fatalError} from "@affinity-lab/util";
 
 export function storageImgServer(
 	exp: Express,

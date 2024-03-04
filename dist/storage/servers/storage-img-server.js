@@ -31,7 +31,7 @@ const express_1 = __importDefault(require("express"));
 const fs = __importStar(require("fs"));
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
-const affinity_util_1 = require("@affinity-lab/affinity-util");
+const util_1 = require("@affinity-lab/util");
 function storageImgServer(exp, endpoint, imgStoragePath, fileStoragePath, maxAge) {
     exp.use(endpoint + "/:catalog/:id/:img/:file", (req, res, next) => {
         const { params } = req;
@@ -58,7 +58,7 @@ function storageImgServer(exp, endpoint, imgStoragePath, fileStoragePath, maxAge
         const oHeight = meta.height;
         const match = img.match(/^(\d+)x(\d+)(?:-(\w+))?$/);
         if (match === null)
-            throw (0, affinity_util_1.fatalError)("Could not parse img params", { url: req.url });
+            throw (0, util_1.fatalError)("Could not parse img params", { url: req.url });
         let width = match[1] === "0" ? oWidth : parseInt(match[1]);
         let height = match[2] === "0" ? oHeight : parseInt(match[2]);
         const focus = meta.pages > 1 ? "center" : (match[3] || "entropy");
