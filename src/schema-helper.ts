@@ -8,6 +8,6 @@ export const reference = (name: string, field: () => MySqlColumn, nullable: bool
 
 export const tagCols = () => {return {
 	id: id(),
-	name: varchar("name", {length: 255}).unique(),
+	name: varchar("name", {length: 255}).notNull().unique(),
 	predefined: boolean("predefined")
 };};

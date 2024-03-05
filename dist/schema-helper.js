@@ -11,7 +11,7 @@ exports.reference = reference;
 const tagCols = () => {
     return {
         id: (0, exports.id)(),
-        name: (0, mysql_core_1.varchar)("name", { length: 255 }).unique(),
+        name: (0, mysql_core_1.varchar)("name", { length: 255 }).notNull().unique(),
         predefined: (0, mysql_core_1.boolean)("predefined")
     };
 };
