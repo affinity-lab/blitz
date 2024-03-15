@@ -1,11 +1,9 @@
-import {MySqlRepository} from "./my-sql-repository";
 import {MySqlTable} from "drizzle-orm/mysql-core";
-import {TagManager} from "../tag-manager";
 import {and, eq, sql} from "drizzle-orm";
+import {ITagManager} from "../tag-manager-interface";
+import {ITagRepository} from "./tag-repository-interface";
 
-
-export abstract class AbstractTagRepository<S extends Record<string, any> = any, T extends MySqlTable = any> extends MySqlRepository<S, T> {
-	public tagManager: TagManager;
+export abstract class AbstractTagRepository<S extends Record<string, any> = any, T extends MySqlTable = any, TM extends ITagManager = any> extends ITagRepository<S, T, TM> {
 	private queries = {
 		getAll: this.db.select().from(this.schema).orderBy(sql`name`).prepare(),
 		getByName: this.db.select().from(this.schema).where(sql`name IN (${sql.placeholder("names")})`).prepare(),
@@ -13,8 +11,8 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 		getByNameNonPredefined: this.db.select().from(this.schema).where(and(sql`name IN (${sql.placeholder("names")})`, eq(sql`predefined`, false))).prepare()
 	}
 
-	public initialize() {
-		this.tagManager = new TagManager(this);
+	public initialize(c: new (...args: any) => TM) {
+		this.tagManager = new c(this);
 	}
 
 	async createTag(tag: string) {

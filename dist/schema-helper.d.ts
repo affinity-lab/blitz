@@ -6,3 +6,4 @@ export declare const tagCols: () => {
     name: import("drizzle-orm").NotNull<import("drizzle-orm/mysql-core").MySqlVarCharBuilderInitial<"name", [string, ...string[]]>>;
     predefined: import("drizzle-orm/mysql-core").MySqlBooleanBuilderInitial<"predefined">;
 };
+export declare function In(col: MySqlColumn, ids: string): import("drizzle-orm").SQL<unknown>;

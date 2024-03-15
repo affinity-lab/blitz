@@ -29,4 +29,8 @@ __exportStar(require("./storage/servers/storage-img-server"), exports);
 __exportStar(require("./storage/img-event-listeners"), exports);
 __exportStar(require("./tag-manager"), exports);
 __exportStar(require("./repository/abstract-tag-repository"), exports);
+__exportStar(require("./repository/abstract-group-tag-repository"), exports);
+__exportStar(require("./repository/tag-repository-interface"), exports);
+__exportStar(require("./group-tag-manager"), exports);
+__exportStar(require("./tag-manager-interface"), exports);
 //# sourceMappingURL=index.js.map

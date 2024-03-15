@@ -89,7 +89,7 @@ class MySqlRepository {
         this.store = store;
         this.cache = cache;
     }
-    initialize() { }
+    initialize(...args) { }
     get name() { return (0, drizzle_orm_1.getTableName)(this.schema); }
     get baseQueries() {
         for (let key of Object.keys(this.schema))

@@ -1,4 +1,5 @@
 import {boolean, int, MySqlColumn, varchar} from "drizzle-orm/mysql-core";
+import {sql} from "drizzle-orm";
 
 export const id = () => int("id").autoincrement().primaryKey();
 export const reference = (name: string, field: () => MySqlColumn, nullable: boolean = false) =>
@@ -11,3 +12,8 @@ export const tagCols = () => {return {
 	name: varchar("name", {length: 255}).notNull().unique(),
 	predefined: boolean("predefined")
 };};
+
+
+export function In(col: MySqlColumn, ids: string) {
+	return sql`${col} in (${sql.placeholder(ids)})`;
+}

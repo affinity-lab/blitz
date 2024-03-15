@@ -13,3 +13,7 @@ export * from "./storage/servers/storage-img-server";
 export * from "./storage/img-event-listeners";
 export * from "./tag-manager";
 export * from "./repository/abstract-tag-repository";
+export * from "./repository/abstract-group-tag-repository";
+export * from "./repository/tag-repository-interface";
+export * from "./group-tag-manager";
+export * from "./tag-manager-interface";

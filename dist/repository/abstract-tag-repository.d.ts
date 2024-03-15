@@ -1,10 +1,9 @@
-import { MySqlRepository } from "./my-sql-repository";
 import { MySqlTable } from "drizzle-orm/mysql-core";
-import { TagManager } from "../tag-manager";
-export declare abstract class AbstractTagRepository<S extends Record<string, any> = any, T extends MySqlTable = any> extends MySqlRepository<S, T> {
-    tagManager: TagManager;
+import { ITagManager } from "../tag-manager-interface";
+import { ITagRepository } from "./tag-repository-interface";
+export declare abstract class AbstractTagRepository<S extends Record<string, any> = any, T extends MySqlTable = any, TM extends ITagManager = any> extends ITagRepository<S, T, TM> {
     private queries;
-    initialize(): void;
+    initialize(c: new (...args: any) => TM): void;
     createTag(tag: string): Promise<void>;
     renameTag(oldName: string, newName: string): Promise<void>;
     changePredefinedTag(name: string, to: boolean): Promise<void>;

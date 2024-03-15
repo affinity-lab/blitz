@@ -57,7 +57,7 @@ export class MySqlRepository<S extends Record<string, any> = any, T extends MySq
 		protected cache?: Cache<InferSelectModel<T>>
 	) {}
 
-	public initialize() {}
+	public initialize(...args: any) {}
 
 	public get name(): string {return getTableName(this.schema);}
 	@MaterializeIt() get baseQueries(): Record<string, PreparedQuery<any>> {
