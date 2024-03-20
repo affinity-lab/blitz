@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagManager = void 0;
+const drizzle_orm_1 = require("drizzle-orm");
 const errors_1 = require("./errors");
 const tag_manager_interface_1 = require("./tag-manager-interface");
 class TagManager extends tag_manager_interface_1.ITagManager {
@@ -55,7 +56,15 @@ class TagManager extends tag_manager_interface_1.ITagManager {
             await this.tableRepo.update(o.id, { name: newName });
         else
             await this.tableRepo.delete(o.id);
-        this.doRename(oldName, newName);
+        await this.doRename(oldName, newName);
+    }
+    async deleteInUsages(originalItem) {
+        let name = `${originalItem.name}`;
+        for (let usage of this.usages) {
+            let set = {};
+            set[usage.field] = (0, drizzle_orm_1.sql) `trim(both ',' from replace(concat(',', ${usage.repo.schema[usage.field]} , ','), ',${name},', ','))`;
+            usage.repo.db.update(usage.repo.schema).set(set).where((0, drizzle_orm_1.sql) `FIND_IN_SET("${name}", ${usage.repo.schema[usage.field]})`);
+        }
     }
 }
 exports.TagManager = TagManager;

@@ -68,14 +68,14 @@ class CollectionStorage {
                 // get the rest and set to cache
                 const has = records.map(record => record.itemId);
                 const need = id.filter(i => !has.includes(i));
-                records = await this.queries.all.execute({ name, need });
+                records = await this.queries.all.execute({ name, ids: need });
                 for (const i in records)
                     res[records[i].itemId] = JSON.parse(records[i].data);
                 const toCache = records.map(record => { return { key: this.key(record.name, record.itemId), value: record }; });
                 await this.cache.set(toCache);
             }
             else {
-                records = await this.queries.all.execute({ name, id });
+                records = await this.queries.all.execute({ name, ids: id });
                 for (const i in records)
                     res[records[i].itemId] = JSON.parse(records[i].data);
             }

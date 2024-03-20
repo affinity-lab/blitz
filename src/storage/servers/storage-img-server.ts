@@ -9,11 +9,13 @@ export function storageImgServer(
 	endpoint: string,
 	imgStoragePath: string,
 	fileStoragePath: string,
-	maxAge: string | number
+	maxAge: string | number,
+	reqMiddleware?: (req: Request) => Request | Promise<Request>
 ): void {
 	exp.use(
 		endpoint + "/:catalog/:id/:img/:file",
-		(req: Request, res: Response, next: NextFunction): void => {
+		async (req: Request, res: Response, next: NextFunction) => {
+			if(reqMiddleware) req = await reqMiddleware(req);
 			const {params} = req;
 			const ext = path.extname(params.file);
 			const file = path.parse(params.file).name;
@@ -24,11 +26,12 @@ export function storageImgServer(
 		},
 		express.static(imgStoragePath),
 		async (req: Request, res: Response) => {
+			if(reqMiddleware) req = await reqMiddleware(req);
 			const {params} = req;
 			const file = path.parse(params.file).name;
 			const {catalog, id, img} = params;
 
-			let b36: string = req.params.id.padStart(6, "0");
+			let b36: string = id.padStart(6, "0");
 
 			const source: string = path.join(fileStoragePath, catalog, b36.slice(0, 2), b36.slice(2, 4), b36.slice(4, 6), file);
 			if (!fs.existsSync(source)) {

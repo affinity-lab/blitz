@@ -1,5 +1,5 @@
-import {MySqlTable} from "drizzle-orm/mysql-core";
-import {and, eq, sql} from "drizzle-orm";
+import {MySqlTable, MySqlUpdateSetSource} from "drizzle-orm/mysql-core";
+import {and, eq, InferSelectModel, sql} from "drizzle-orm";
 import {ITagManager} from "../tag-manager-interface";
 import {ITagRepository} from "./tag-repository-interface";
 
@@ -50,5 +50,13 @@ export abstract class AbstractTagRepository<S extends Record<string, any> = any,
 
 	getByNameNonPredefined(names: Array<string>) {
 		return this.queries.getByNameNonPredefined.execute({names: names.join(", ")});
+	}
+
+	protected async afterDelete(id: number, affectedRows: number, originalItem: InferSelectModel<T> | undefined): Promise<void> {
+		await this.tagManager.deleteInUsages(originalItem);
+	}
+
+	protected async afterUpdate<T extends MySqlTable = any>(id: number, values: MySqlUpdateSetSource<T>, affectedRows: number, originalItem: InferSelectModel<T> | undefined): Promise<void> {
+		await this.tagManager.selfRename(values, originalItem);
 	}
 }

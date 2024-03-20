@@ -1,6 +1,6 @@
 import {MySqlRepository} from "./repository/my-sql-repository";
 import {MySqlUpdateSetSource} from "drizzle-orm/mysql-core";
-import {and, InferInsertModel, not, sql} from "drizzle-orm";
+import {InferInsertModel, InferSelectModel, sql} from "drizzle-orm";
 import {blitzError} from "./errors";
 import {MaybeArray} from "@affinity-lab/util";
 import {ITagManager} from "./tag-manager-interface";
@@ -56,7 +56,15 @@ export class TagManager extends ITagManager {
 		let n = await this.tableRepo.getOneByName(newName);
 		if (!n) await this.tableRepo.update(o.id, {name: newName});
 		else await this.tableRepo.delete(o.id);
-		this.doRename(oldName, newName);
+		await this.doRename(oldName, newName);
+	}
 
+	async deleteInUsages(originalItem: InferSelectModel<any> | any) {
+		let name = `${originalItem.name}`
+		for (let usage of this.usages) {
+			let set: Record<string, any> = {}
+			set[usage.field] = sql`trim(both ',' from replace(concat(',', ${usage.repo.schema[usage.field]} , ','), ',${name},', ','))`;
+			usage.repo.db.update(usage.repo.schema).set(set).where(sql`FIND_IN_SET("${name}", ${usage.repo.schema[usage.field]})`);
+		}
 	}
 }

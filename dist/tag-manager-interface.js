@@ -31,7 +31,6 @@ class ITagManager {
         }
         prev = [...new Set(prev)];
         curr = [...new Set(curr)];
-        //TODO ITT A HIBA
         return { prev, curr };
     }
     async deleteItems(items) {
@@ -56,6 +55,11 @@ class ITagManager {
             usage.repo.db.update(usage.repo.schema).set(set).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.sql) `FIND_IN_SET("${oldName}", ${usage.field})`, (0, drizzle_orm_1.not)((0, drizzle_orm_1.sql) `FIND_IN_SET("${newName}", ${usage.field})`)));
             set[usage.field] = (0, drizzle_orm_1.sql) `trim(both ',' from replace(concat(',', ${usage.field} , ','), ',${oldName},', ','))`;
             usage.repo.db.update(usage.repo.schema).set(set).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.sql) `FIND_IN_SET("${oldName}", ${usage.field})`, (0, drizzle_orm_1.sql) `FIND_IN_SET("${newName}", ${usage.field})`));
+        }
+    }
+    async selfRename(values, originalItem) {
+        if (values.name) {
+            await this.doRename(originalItem.name, values.name);
         }
     }
 }

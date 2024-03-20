@@ -24,4 +24,9 @@ export declare class Collection<METADATA extends Record<string, any>> {
     get(ids: Array<number>): Promise<Record<number, Attachments>>;
     setPosition(id: number, filename: string, position: number): Promise<void>;
     rename(id: number, filename: string, newName: string): Promise<void>;
+    attach(obj: EntityLike | Array<EntityLike>, propertyName: string): Promise<void>;
 }
+type EntityLike = {
+    id: number;
+} & Record<string, any>;
+export {};

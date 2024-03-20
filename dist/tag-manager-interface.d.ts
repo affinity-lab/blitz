@@ -1,6 +1,6 @@
 import { MaybePromise } from "@affinity-lab/util";
 import { MySqlUpdateSetSource } from "drizzle-orm/mysql-core";
-import { InferInsertModel } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, Table } from "drizzle-orm";
 import { MySqlRepository } from "./repository/my-sql-repository";
 import { ITagRepository } from "./repository/tag-repository-interface";
 export declare abstract class ITagManager {
@@ -8,7 +8,7 @@ export declare abstract class ITagManager {
     protected usages: Array<{
         "repo": MySqlRepository;
         "field": string;
-    }>;
+    } & Record<string, any>>;
     constructor(tableRepo: ITagRepository);
     abstract addUsage(...args: any): MaybePromise<void>;
     protected prepare(repository: MySqlRepository, values: MySqlUpdateSetSource<any> | InferInsertModel<any>): void;
@@ -24,4 +24,6 @@ export declare abstract class ITagManager {
     abstract add(...args: any): MaybePromise<void>;
     protected doRename(oldName: string, newName: string): void;
     abstract rename(...args: any): MaybePromise<void>;
+    abstract deleteInUsages(...args: any): Promise<void>;
+    selfRename<T extends Table<any> = any>(values: MySqlUpdateSetSource<any>, originalItem: InferSelectModel<T> | any): Promise<void>;
 }

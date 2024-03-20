@@ -1,2 +1,2 @@
 import { Express, Request } from "express";
-export declare function storageFileServer(exp: Express, endpoint: string, fileStoragePath: string, fileMaxAge: string | number, guards?: Record<string, ((id: number, file: string, req: Request) => boolean | Promise<boolean>)>): void;
+export declare function storageFileServer(exp: Express, endpoint: string, fileStoragePath: string, fileMaxAge: string | number, guards?: Record<string, ((id: number, file: string, req: Request) => boolean | Promise<boolean>)>, reqMiddleware?: (req: Request) => Request | Promise<Request>): void;

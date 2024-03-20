@@ -32,8 +32,10 @@ const fs = __importStar(require("fs"));
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const util_1 = require("@affinity-lab/util");
-function storageImgServer(exp, endpoint, imgStoragePath, fileStoragePath, maxAge) {
-    exp.use(endpoint + "/:catalog/:id/:img/:file", (req, res, next) => {
+function storageImgServer(exp, endpoint, imgStoragePath, fileStoragePath, maxAge, reqMiddleware) {
+    exp.use(endpoint + "/:catalog/:id/:img/:file", async (req, res, next) => {
+        if (reqMiddleware)
+            req = await reqMiddleware(req);
         const { params } = req;
         const ext = path_1.default.extname(params.file);
         const file = path_1.default.parse(params.file).name;
@@ -42,6 +44,8 @@ function storageImgServer(exp, endpoint, imgStoragePath, fileStoragePath, maxAge
         res.getHeader("Cache-Control") === undefined && res.setHeader("Cache-Control", `public, max-age=${maxAge}`);
         next();
     }, express_1.default.static(imgStoragePath), async (req, res) => {
+        if (reqMiddleware)
+            req = await reqMiddleware(req);
         const { params } = req;
         const file = path_1.default.parse(params.file).name;
         const { catalog, id, img } = params;

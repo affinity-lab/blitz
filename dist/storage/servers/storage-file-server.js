@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.storageFileServer = void 0;
 const express_1 = __importDefault(require("express"));
-function storageFileServer(exp, endpoint, fileStoragePath, fileMaxAge, guards = {}) {
+function storageFileServer(exp, endpoint, fileStoragePath, fileMaxAge, guards = {}, reqMiddleware) {
     exp.use(endpoint + "/:name/:id/:file", async (req, res, next) => {
+        if (reqMiddleware)
+            req = await reqMiddleware(req);
         if (guards[req.params.name] !== undefined) {
             let guard = guards[req.params.name];
             if (await guard(parseInt(req.params.id, 36), req.params.file, req)) {
@@ -20,7 +22,9 @@ function storageFileServer(exp, endpoint, fileStoragePath, fileMaxAge, guards = 
         else {
             next();
         }
-    }, (req, res, next) => {
+    }, async (req, res, next) => {
+        if (reqMiddleware)
+            req = await reqMiddleware(req);
         let b36 = req.params.id.padStart(6, "0");
         req.url = `//${req.params.name}/${b36.slice(0, 2)}/${b36.slice(2, 4)}/${b36.slice(4, 6)}/${req.params.file}`;
         res.getHeader("Cache-Control") === undefined && res.setHeader("Cache-Control", `public, max-age=${fileMaxAge}`);

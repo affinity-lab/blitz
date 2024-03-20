@@ -40,6 +40,12 @@ class AbstractTagRepository extends tag_repository_interface_1.ITagRepository {
     getByNameNonPredefined(names) {
         return this.queries.getByNameNonPredefined.execute({ names: names.join(", ") });
     }
+    async afterDelete(id, affectedRows, originalItem) {
+        await this.tagManager.deleteInUsages(originalItem);
+    }
+    async afterUpdate(id, values, affectedRows, originalItem) {
+        await this.tagManager.selfRename(values, originalItem);
+    }
 }
 exports.AbstractTagRepository = AbstractTagRepository;
 //# sourceMappingURL=abstract-tag-repository.js.map

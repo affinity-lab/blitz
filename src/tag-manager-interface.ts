@@ -1,12 +1,12 @@
 import {MaybePromise} from "@affinity-lab/util";
 import {MySqlUpdateSetSource} from "drizzle-orm/mysql-core";
-import {and, InferInsertModel, not, sql} from "drizzle-orm";
+import {and, InferInsertModel, InferSelectModel, not, sql, Table} from "drizzle-orm";
 import {MySqlRepository} from "./repository/my-sql-repository";
 import {ITagRepository} from "./repository/tag-repository-interface";
 import {blitzError} from "./errors";
 
 export abstract class ITagManager {
-	protected usages: Array<{ "repo": MySqlRepository, "field": string }> = []
+	protected usages: Array<{ "repo": MySqlRepository, "field": string} & Record<string, any>> = []
 	constructor(
 		protected tableRepo: ITagRepository,
 	) {}
@@ -31,7 +31,6 @@ export abstract class ITagManager {
 		}
 		prev = [...new Set(prev)];
 		curr = [...new Set(curr)];
-		//TODO ITT A HIBA
 		return {prev, curr};
 	}
 
@@ -67,4 +66,11 @@ export abstract class ITagManager {
 	}
 
 	abstract rename(...args: any): MaybePromise<void>;
+	abstract deleteInUsages(...args: any): Promise<void>;
+
+	async selfRename<T extends Table<any> = any>(values: MySqlUpdateSetSource<any>, originalItem: InferSelectModel<T> | any) {
+		if(values.name) {
+			await this.doRename(originalItem.name, values.name)
+		}
+	}
 }

@@ -120,4 +120,15 @@ export class Collection<METADATA extends Record<string, any>> {
 		this.emitter.emit(BLITZ_EVENTS.STORAGE_RENAME, this.name, id, filename);
 		await this.storage.rename(this.name, id, filename, newName);
 	}
+
+	async attach(obj: EntityLike | Array<EntityLike>, propertyName: string) {
+		if(Array.isArray(obj)) {
+			let att = await this.get(obj.map(i=>i.id));
+			obj.forEach(i=>{i[propertyName] = att[i.id]})
+		} else {
+			obj[propertyName] = await this.get(obj.id);
+		}
+	}
 }
+
+type EntityLike = {id: number} & Record<string, any>

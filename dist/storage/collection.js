@@ -99,6 +99,15 @@ class Collection {
         this.emitter.emit(events_1.BLITZ_EVENTS.STORAGE_RENAME, this.name, id, filename);
         await this.storage.rename(this.name, id, filename, newName);
     }
+    async attach(obj, propertyName) {
+        if (Array.isArray(obj)) {
+            let att = await this.get(obj.map(i => i.id));
+            obj.forEach(i => { i[propertyName] = att[i.id]; });
+        }
+        else {
+            obj[propertyName] = await this.get(obj.id);
+        }
+    }
 }
 exports.Collection = Collection;
 //# sourceMappingURL=collection.js.map
