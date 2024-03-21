@@ -39,6 +39,8 @@ class GroupTagManager extends tag_manager_interface_1.ITagManager {
         let oN = `$.${oldName}`;
         let eN = `"${newName}"`;
         let eO = `"${oldName}"`;
+        let oldN = `,${oldName},`;
+        let newN = `,${newName},`;
         for (let usage of this.usages) {
             let set = {};
             if (usage.mode && usage.mode === "JSON") {
@@ -51,10 +53,10 @@ class GroupTagManager extends tag_manager_interface_1.ITagManager {
                 await usage.repo.db.update(usage.repo.schema).set(set).where(w);
             }
             else {
-                set[usage.field] = (0, drizzle_orm_1.sql) `trim(both ',' from replace(concat(',', ${usage.field} , ','), ',${oldName},', ',${newName},'))`;
-                usage.repo.db.update(usage.repo.schema).set(set).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.sql) `FIND_IN_SET("${oldName}", ${usage.repo.schema[usage.field]})`, (0, drizzle_orm_1.not)((0, drizzle_orm_1.sql) `FIND_IN_SET("${newName}", ${usage.repo.schema[usage.field]})`)));
-                set[usage.field] = (0, drizzle_orm_1.sql) `trim(both ',' from replace(concat(',', ${usage.field} , ','), ',${oldName},', ','))`;
-                usage.repo.db.update(usage.repo.schema).set(set).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.sql) `FIND_IN_SET("${oldName}", ${usage.repo.schema[usage.field]})`, (0, drizzle_orm_1.sql) `FIND_IN_SET("${newName}", ${usage.repo.schema[usage.field]})`));
+                set[usage.field] = (0, drizzle_orm_1.sql) `trim(both ',' from replace(concat(',', ${usage.repo.schema[usage.field]} , ','), ${oldN}, ${newN}))`;
+                await usage.repo.db.update(usage.repo.schema).set(set).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.sql) `FIND_IN_SET(${oldName}, ${usage.repo.schema[usage.field]})`, (0, drizzle_orm_1.not)((0, drizzle_orm_1.sql) `FIND_IN_SET(${newName}, ${usage.repo.schema[usage.field]})`)));
+                set[usage.field] = (0, drizzle_orm_1.sql) `trim(both ',' from replace(concat(',', ${usage.repo.schema[usage.field]} , ','), ${oldN}, ','))`;
+                await usage.repo.db.update(usage.repo.schema).set(set).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.sql) `FIND_IN_SET(${oldName}, ${usage.repo.schema[usage.field]})`, (0, drizzle_orm_1.sql) `FIND_IN_SET(${newName}, ${usage.repo.schema[usage.field]})`));
             }
         }
     }

@@ -49,7 +49,7 @@ function storageImgServer(exp, endpoint, imgStoragePath, fileStoragePath, maxAge
         const { params } = req;
         const file = path_1.default.parse(params.file).name;
         const { catalog, id, img } = params;
-        let b36 = req.params.id.padStart(6, "0");
+        let b36 = id.padStart(6, "0");
         const source = path_1.default.join(fileStoragePath, catalog, b36.slice(0, 2), b36.slice(2, 4), b36.slice(4, 6), file);
         if (!fs.existsSync(source)) {
             res.removeHeader("Cache-Control");

@@ -7,7 +7,7 @@ export declare class GroupTagManager extends ITagManager {
     addUsage(usage: MaybeArray<{
         "repo": MySqlRepository;
         "field": string;
-        mode: "JSON" | undefined;
+        mode?: "JSON";
     }>): void;
     deleteInUsages(originalItem: InferSelectModel<any> | any): Promise<void>;
     update(repository: MySqlRepository, originalItem: InferInsertModel<any> | undefined, values: MySqlUpdateSetSource<any> | undefined, eventId: number): Promise<void>;

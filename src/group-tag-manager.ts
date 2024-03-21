@@ -7,7 +7,7 @@ import {blitzError} from "./errors";
 
 export class GroupTagManager extends ITagManager {
 
-	addUsage(usage: MaybeArray<{ "repo": MySqlRepository, "field": string, mode: "JSON" | undefined }>) {
+	addUsage(usage: MaybeArray<{ "repo": MySqlRepository, "field": string, mode?: "JSON" }>) {
 		this.usages.push(...(Array.isArray(usage) ? usage : [usage]));
 	}
 
@@ -45,6 +45,8 @@ export class GroupTagManager extends ITagManager {
 		let oN = `$.${oldName}`;
 		let eN = `"${newName}"`;
 		let eO = `"${oldName}"`;
+		let oldN = `,${oldName},`
+		let newN = `,${newName},`
 		for (let usage of this.usages as { repo: MySqlRepository; field: string, mode?: "JSON"}[]) {
 			let set: Record<string, any> = {};
 			if(usage.mode && usage.mode === "JSON") {
@@ -56,10 +58,10 @@ export class GroupTagManager extends ITagManager {
 				set[usage.field] = sql`json_remove(${usage.repo.schema[usage.field]}, ${oN})`; // replace this line with the one above, to add the values together
 				await usage.repo.db.update(usage.repo.schema).set(set).where(w);
 			} else {
-				set[usage.field] = sql`trim(both ',' from replace(concat(',', ${usage.field} , ','), ',${oldName},', ',${newName},'))`;
-				usage.repo.db.update(usage.repo.schema).set(set).where(and(sql`FIND_IN_SET("${oldName}", ${usage.repo.schema[usage.field]})`, not(sql`FIND_IN_SET("${newName}", ${usage.repo.schema[usage.field]})`)));
-				set[usage.field] = sql`trim(both ',' from replace(concat(',', ${usage.field} , ','), ',${oldName},', ','))`;
-				usage.repo.db.update(usage.repo.schema).set(set).where(and(sql`FIND_IN_SET("${oldName}", ${usage.repo.schema[usage.field]})`, sql`FIND_IN_SET("${newName}", ${usage.repo.schema[usage.field]})`));
+				set[usage.field] = sql`trim(both ',' from replace(concat(',', ${usage.repo.schema[usage.field]} , ','), ${oldN}, ${newN}))`;
+				await usage.repo.db.update(usage.repo.schema).set(set).where(and(sql`FIND_IN_SET(${oldName}, ${usage.repo.schema[usage.field]})`, not(sql`FIND_IN_SET(${newName}, ${usage.repo.schema[usage.field]})`)));
+				set[usage.field] = sql`trim(both ',' from replace(concat(',', ${usage.repo.schema[usage.field]} , ','), ${oldN}, ','))`;
+				await usage.repo.db.update(usage.repo.schema).set(set).where(and(sql`FIND_IN_SET(${oldName}, ${usage.repo.schema[usage.field]})`, sql`FIND_IN_SET(${newName}, ${usage.repo.schema[usage.field]})`));
 			}
 		}
 	}
